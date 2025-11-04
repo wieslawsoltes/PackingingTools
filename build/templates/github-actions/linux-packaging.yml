@@ -1,0 +1,47 @@
+# GitHub Actions workflow template for Linux packaging with PackagingTools.
+name: packaging-linux
+
+on:
+  workflow_dispatch:
+
+env:
+  CONFIGURATION: Release
+  PROJECT_FILE: samples/sample-project.json
+  ARTIFACTS_DIR: artifacts/linux
+
+jobs:
+  package-linux:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install native dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm ruby ruby-dev rubygems build-essential flatpak appstream curl gnupg snapd
+          sudo snap install snapcraft --classic
+          sudo gem install --no-document fpm
+
+      - name: Bootstrap PackagingTools
+        run: bash ./build/scripts/bootstrap-packagingtools.sh linux $CONFIGURATION
+
+      - name: Package Linux artifacts
+        run: >
+          dotnet run --project src/PackagingTools.Cli
+          -- pack
+          --project $PROJECT_FILE
+          --platform linux
+          --output $ARTIFACTS_DIR
+          --configuration $CONFIGURATION
+
+      - name: Upload packaging artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-packages
+          path: ${{ env.ARTIFACTS_DIR }}

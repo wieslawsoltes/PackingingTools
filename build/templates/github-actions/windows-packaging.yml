@@ -1,0 +1,49 @@
+# GitHub Actions workflow template for Windows packaging with PackagingTools.
+name: packaging-windows
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "samples/**"
+      - "build/scripts/**"
+      - ".github/workflows/**"
+
+env:
+  CONFIGURATION: Release
+  PROJECT_FILE: samples/sample-project.json
+  ARTIFACTS_DIR: artifacts/windows
+
+jobs:
+  package-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Bootstrap PackagingTools
+        shell: pwsh
+        run: ./build/scripts/bootstrap-packagingtools.ps1 -Platform windows -Configuration $env:CONFIGURATION
+
+      - name: Package Windows artifacts
+        shell: pwsh
+        run: >
+          dotnet run --project src/PackagingTools.Cli
+          -- pack
+          --project $env:PROJECT_FILE
+          --platform windows
+          --output $env:ARTIFACTS_DIR
+          --configuration $env:CONFIGURATION
+
+      - name: Upload packaging artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-packages
+          path: ${{ env.ARTIFACTS_DIR }}

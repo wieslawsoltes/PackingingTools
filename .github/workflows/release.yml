@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  publish:
+    name: Publish NuGet packages and GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: true
+      - name: Compute package version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "PACKAGE_VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Restore
+        run: dotnet restore PackagingTools.sln
+      - name: Pack solution
+        run: |
+          dotnet pack PackagingTools.sln --configuration Release --output artifacts/nuget /p:Version=$PACKAGE_VERSION
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuget-release
+          path: artifacts/nuget
+      - name: Push packages to NuGet
+        if: ${{ secrets.NUGET_API_KEY != '' }}
+        run: |
+          dotnet nuget push "artifacts/nuget/*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PackagingTools ${{ env.PACKAGE_VERSION }}
+          body: |
+            Automated release for tag ${{ github.ref }}. Packages are attached as assets and published to NuGet when credentials are configured.
+          files: artifacts/nuget/*.nupkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

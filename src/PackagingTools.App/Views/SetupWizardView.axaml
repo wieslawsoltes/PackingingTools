@@ -1,0 +1,198 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PackagingTools.App.ViewModels"
+             xmlns:conv="using:PackagingTools.App.Converters"
+             mc:Ignorable="d"
+             x:Class="PackagingTools.App.Views.SetupWizardView"
+             x:Name="WizardView"
+             x:DataType="vm:SetupWizardViewModel">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="ProjectDetailsTemplate" DataType="vm:SetupWizardViewModel">
+            <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                    <Label Grid.Row="0" Grid.Column="0" Content="Project name" Target="{Binding ElementName=ProjectNameBox}" />
+                    <TextBox x:Name="ProjectNameBox"
+                             Grid.Row="0"
+                             Grid.Column="1"
+                             Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Identifier" Target="{Binding ElementName=ProjectIdBox}" />
+                    <TextBox x:Name="ProjectIdBox"
+                             Grid.Row="1"
+                             Grid.Column="1"
+                             Text="{Binding ProjectIdentifier, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Version" Target="{Binding ElementName=ProjectVersionBox}" />
+                    <TextBox x:Name="ProjectVersionBox"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding ProjectVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Label Grid.Row="3" Grid.Column="0" Content="Project file" Target="{Binding ElementName=ProjectFileBox}" />
+                    <TextBox x:Name="ProjectFileBox"
+                             Grid.Row="3"
+                             Grid.Column="1"
+                             Watermark="Optional path to save project definition"
+                             Text="{Binding ProjectFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <TextBlock Grid.Row="4"
+                               Grid.Column="0"
+                               Grid.ColumnSpan="2"
+                               FontWeight="SemiBold"
+                               Text="Target platforms" />
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <CheckBox Content="Windows" IsChecked="{Binding IncludeWindows}" />
+                    <CheckBox Content="macOS" IsChecked="{Binding IncludeMac}" />
+                    <CheckBox Content="Linux" IsChecked="{Binding IncludeLinux}" />
+                </StackPanel>
+
+                <TextBlock Text="Choose the platforms you want to prepare packaging pipelines for." Foreground="#666" FontSize="12" />
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="EnvironmentTemplate" DataType="vm:SetupWizardViewModel">
+            <StackPanel Spacing="12">
+                <Button Content="Run validation"
+                        Width="160"
+                        HorizontalAlignment="Left"
+                        Command="{Binding RunEnvironmentValidationCommand}" />
+
+                <ListBox ItemsSource="{Binding EnvironmentChecks}" MinHeight="200">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="vm:EnvironmentCheckViewModel">
+                            <Border BorderBrush="#ddd" BorderThickness="1" CornerRadius="4" Padding="8" Margin="0,0,0,8">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding Status}"
+                                               FontSize="12"
+                                               Foreground="{Binding Passed, Converter={StaticResource StatusBrushConverter}}" />
+                                    <TextBlock Text="{Binding Details}" FontSize="12" Foreground="#666" />
+                                    <TextBlock Text="{Binding Remediation}" FontSize="12" Foreground="#8B0000" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </DataTemplate>
+
+    <DataTemplate x:Key="PlatformTemplate" DataType="vm:SetupWizardViewModel">
+        <TabControl ItemsSource="{Binding PlatformEditors}"
+                    SelectedItem="{Binding SelectedPlatformEditor, Mode=TwoWay}">
+            <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+
+                <TabControl.ContentTemplate>
+                    <DataTemplate DataType="vm:PlatformConfigurationViewModel">
+                        <ScrollViewer>
+                            <StackPanel Spacing="12" Margin="0,4,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Formats" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding Formats}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="#bbb" BorderThickness="1" CornerRadius="4" Padding="4" Margin="0,4,0,0">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding .}" />
+                                                        <Button Content="Remove"
+                                                                Command="{Binding DataContext.RemoveFormatCommand, ElementName=WizardView}"
+                                                                CommandParameter="{Binding .}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <Button Content="Add format"
+                                            Margin="0,8,0,0"
+                                            Width="120"
+                                            Command="{Binding DataContext.AddFormatCommand, ElementName=WizardView}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+
+                                <StackPanel>
+                                    <TextBlock Text="Properties" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding Properties}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="vm:PropertyItemViewModel">
+                                                <Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8" Margin="0,4,0,0">
+                                                    <TextBox Grid.Column="0"
+                                                             Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <TextBox Grid.Column="1"
+                                                             Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Button Grid.Column="2"
+                                                            Content="Remove"
+                                                            Command="{Binding DataContext.RemovePropertyCommand, ElementName=WizardView}"
+                                                            CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Content="Add property"
+                                            Margin="0,8,0,0"
+                                            Width="120"
+                                            Command="{Binding DataContext.AddPropertyCommand, ElementName=WizardView}"
+                                            CommandParameter="{Binding}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+        </TabControl>
+    </DataTemplate>
+
+    <conv:BoolToBrushConverter x:Key="StatusBrushConverter"
+                               TrueBrush="#2E7D32"
+                               FalseBrush="#8B0000" />
+    <conv:SetupWizardStageToTemplateConverter x:Key="StageTemplateConverter"
+                                              ProjectDetailsTemplate="{StaticResource ProjectDetailsTemplate}"
+                                              EnvironmentTemplate="{StaticResource EnvironmentTemplate}"
+                                              PlatformTemplate="{StaticResource PlatformTemplate}" />
+</UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+    </UserControl.Styles>
+
+    <Design.DataContext>
+        <vm:SetupWizardViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="12" Margin="16">
+        <ProgressBar Grid.Row="0"
+                     Minimum="0"
+                     Maximum="{Binding Stages.Count}"
+                     Value="{Binding CurrentStepIndex}"
+                     Height="8" />
+
+        <TextBlock Grid.Row="1" Text="{Binding CurrentTitle}" FontSize="20" FontWeight="SemiBold" />
+        <TextBlock Grid.Row="2" Text="{Binding CurrentDescription}" Foreground="#666" />
+
+        <Border Grid.Row="3" BorderBrush="#ccc" BorderThickness="1" CornerRadius="6" Padding="16">
+            <ContentControl Content="{Binding}"
+                            ContentTemplate="{Binding CurrentStage, Converter={StaticResource StageTemplateConverter}}" />
+        </Border>
+
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto,Auto" ColumnSpacing="8" VerticalAlignment="Center">
+            <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" Foreground="#666" />
+            <Button Grid.Column="1" Content="Back" Command="{Binding PreviousCommand}" />
+            <Button Grid.Column="2" Content="Next" Command="{Binding NextCommand}" />
+            <Button Grid.Column="3" Content="Finish" Command="{Binding FinishCommand}" IsDefault="True" />
+        </Grid>
+    </Grid>
+</UserControl>

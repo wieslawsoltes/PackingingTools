@@ -1,0 +1,24 @@
+{
+  "id": "sample",
+  "name": "Sample",
+  "version": "1.0.0",
+  "metadata": {
+    "windows.msi.sourceDirectory": "sample\\payload",
+    "windows.msi.shortcutName": "Sample",
+    "windows.msi.shortcutTarget": "Sample.exe",
+    "windows.msi.shortcutDescription": "Sample App",
+    "windows.msi.protocolName": "sample",
+    "windows.msi.protocolCommand": "Sample.exe --open %1",
+    "windows.msi.shellExtensionProgId": "SampleFile",
+    "windows.msi.shellExtensionExtension": ".sample",
+    "windows.msi.shellExtensionCommand": "Sample.exe --open %1"
+  },
+  "platforms": {
+    "Windows": {
+      "formats": [
+        "msi"
+      ],
+      "properties": {}
+    }
+  }
+}

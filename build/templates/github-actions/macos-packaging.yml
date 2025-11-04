@@ -1,0 +1,40 @@
+# GitHub Actions workflow template for macOS packaging with PackagingTools.
+name: packaging-macos
+
+on:
+  workflow_dispatch:
+
+env:
+  CONFIGURATION: Release
+  PROJECT_FILE: samples/sample-project.json
+  ARTIFACTS_DIR: artifacts/macos
+
+jobs:
+  package-macos:
+    runs-on: macos-13
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Bootstrap PackagingTools
+        run: bash ./build/scripts/bootstrap-packagingtools.sh mac $CONFIGURATION
+
+      - name: Package macOS artifacts
+        run: >
+          dotnet run --project src/PackagingTools.Cli
+          -- pack
+          --project $PROJECT_FILE
+          --platform mac
+          --output $ARTIFACTS_DIR
+          --configuration $CONFIGURATION
+
+      - name: Upload packaging artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-packages
+          path: ${{ env.ARTIFACTS_DIR }}

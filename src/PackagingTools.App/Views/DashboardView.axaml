@@ -1,0 +1,173 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PackagingTools.App.ViewModels"
+             mc:Ignorable="d"
+             x:Class="PackagingTools.App.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+  <Design.DataContext>
+    <vm:DashboardViewModel />
+  </Design.DataContext>
+
+  <ScrollViewer Padding="0,0,12,12"
+                KeyboardNavigation.TabNavigation="Once"
+                AutomationProperties.Name="Dashboard content">
+    <StackPanel Spacing="16">
+      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <TextBlock Text="Operations dashboard" FontSize="20" FontWeight="SemiBold" />
+          <TextBlock Text="{Binding GeneratedAt, StringFormat='Updated {0:G}'}"
+                     VerticalAlignment="Center"
+                     Foreground="#666" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+          <Button Content="Refresh"
+                  Command="{Binding RefreshDashboardCommand}"
+                  AutomationProperties.Name="Refresh dashboard" />
+          <ProgressBar Width="120"
+                       IsIndeterminate="True"
+                       IsVisible="{Binding IsRefreshing}" />
+        </StackPanel>
+      </Grid>
+
+      <TextBlock Text="{Binding StatusMessage}"
+                 FontStyle="Italic"
+                 Foreground="#666" />
+
+      <Border BorderBrush="#ddd" BorderThickness="1" CornerRadius="4" Padding="12">
+        <StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+          <StackPanel Width="160">
+            <TextBlock Text="Channel filter" FontSize="12" Foreground="#666" />
+            <ComboBox ItemsSource="{Binding AvailableChannels}"
+                      SelectedItem="{Binding SelectedChannelFilter, Mode=TwoWay}" />
+          </StackPanel>
+          <StackPanel Width="140">
+            <TextBlock Text="Max jobs" FontSize="12" Foreground="#666" />
+            <NumericUpDown Minimum="1"
+                           Maximum="200"
+                           Value="{Binding MaxJobs, Mode=TwoWay}" />
+          </StackPanel>
+          <CheckBox Content="Failures only"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding ShowFailuresOnly, Mode=TwoWay}" />
+          <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <Button Content="Apply filters"
+                    Command="{Binding RefreshDashboardCommand}" />
+            <Button Content="Export"
+                    Command="{Binding ExportDashboardCommand}" />
+          </StackPanel>
+          <TextBlock Text="{Binding ExportSummary}" Foreground="#666" FontSize="12" VerticalAlignment="Center" />
+        </StackPanel>
+      </Border>
+
+      <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+        <Border BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12"
+                Focusable="True"
+                TabIndex="0"
+                AutomationProperties.Name="Signing overview">
+          <StackPanel Spacing="4">
+            <TextBlock Text="Signing overview" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Signing.ActiveCertificates, StringFormat='Active certificates: {0}'}" />
+            <TextBlock Text="{Binding Signing.CertificatesExpiringSoon, StringFormat='Expiring soon: {0}'}" />
+            <TextBlock Text="{Binding Signing.FailedSignaturesLast7Days, StringFormat='Failed signatures (7d): {0}'}" />
+            <TextBlock Text="{Binding Signing.PendingApprovals, StringFormat='Pending approvals: {0}'}" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="1" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12"
+                Focusable="True"
+                TabIndex="1"
+                AutomationProperties.Name="Dependency health">
+          <StackPanel Spacing="4">
+            <TextBlock Text="Dependency health" FontWeight="SemiBold" />
+            <TextBlock Text="{Binding Dependency.TrackedComponents, StringFormat='Tracked components: {0}'}" />
+            <TextBlock Text="{Binding Dependency.HighSeverityFindings, StringFormat='High alerts: {0}'}" />
+            <TextBlock Text="{Binding Dependency.MediumSeverityFindings, StringFormat='Medium alerts: {0}'}" />
+            <TextBlock Text="{Binding Dependency.LowSeverityFindings, StringFormat='Low alerts: {0}'}" />
+            <TextBlock Text="{Binding Dependency.LastSbomGeneratedAt, StringFormat='Last SBOM: {0:G}', TargetNullValue='Last SBOM: not recorded'}" />
+          </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12"
+                Focusable="True"
+                TabIndex="2"
+                AutomationProperties.Name="Release channel status">
+          <StackPanel Spacing="8">
+            <TextBlock Text="Release channels" FontWeight="SemiBold" />
+            <ItemsControl ItemsSource="{Binding ReleaseChannels}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border BorderBrush="#444" BorderThickness="0,0,0,1" Padding="0,4,0,4"
+                          Focusable="True"
+                          AutomationProperties.Name="Release channel details">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                      <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Channel}" FontWeight="SemiBold" />
+                      <TextBlock Grid.Row="0" Grid.Column="1"
+                                 Text="{Binding LatestVersion}"
+                                 HorizontalAlignment="Right" />
+                      <TextBlock Grid.Row="1" Grid.Column="0"
+                                 Text="{Binding PublishedAt, StringFormat='Published {0:G}'}"
+                                 Foreground="#666" />
+                      <TextBlock Grid.Row="1" Grid.Column="1"
+                                 Text="{Binding DeploymentsLast30Days, StringFormat='Deployments (30d): {0}'}"
+                                 HorizontalAlignment="Right"
+                                 Foreground="#666" />
+                      <TextBlock Grid.RowSpan="2"
+                                 Grid.ColumnSpan="2"
+                                 Text="PAUSED"
+                                 Foreground="#B00020"
+                                 FontWeight="Bold"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 IsVisible="{Binding IsPaused}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+      </Grid>
+
+      <Border BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12"
+              Focusable="True"
+              TabIndex="3"
+              AutomationProperties.Name="Recent job activity">
+        <StackPanel Spacing="12">
+          <TextBlock Text="Recent job activity" FontWeight="SemiBold" />
+          <ListBox ItemsSource="{Binding RecentJobs}"
+                   AutomationProperties.Name="Recent jobs table">
+            <ListBox.Styles>
+              <Style Selector="ListBoxItem">
+                <Setter Property="Padding" Value="4" />
+              </Style>
+            </ListBox.Styles>
+            <ListBox.ItemTemplate>
+              <DataTemplate>
+                <Grid ColumnDefinitions="2*,*,*,*,*,*,*" ColumnSpacing="8">
+                  <TextBlock Grid.Column="0"
+                             Text="{Binding DisplayName}"
+                             FontWeight="SemiBold" />
+                  <TextBlock Grid.Column="1"
+                             Text="{Binding Platform}" />
+                  <TextBlock Grid.Column="2"
+                             Text="{Binding Channel}" />
+                  <TextBlock Grid.Column="3"
+                             Text="{Binding Status}" />
+                  <TextBlock Grid.Column="4"
+                              Text="{Binding Duration, StringFormat='{}{0:mm\\:ss}'}" />
+                  <TextBlock Grid.Column="5"
+                             Text="{Binding CompletedAt, StringFormat='{}{0:G}'}" />
+                  <TextBlock Grid.Column="6"
+                             Text="{Binding BlockingIssueCount, StringFormat='Blocking issues: {0}'}"
+                             Foreground="#B00020" />
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

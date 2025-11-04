@@ -1,0 +1,224 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PackagingTools.App.ViewModels"
+        xmlns:views="using:PackagingTools.App.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="600"
+        x:Class="PackagingTools.App.Views.MainWindow"
+        x:Name="Root"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="PackagingTools">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16" RowSpacing="12">
+        <TextBlock Grid.Row="0" Text="PackagingTools" FontSize="22" FontWeight="SemiBold" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Content="Setup Wizard" Command="{Binding ShowWizardCommand}" />
+                <Button Content="Workspace" Command="{Binding ShowWorkspaceCommand}" />
+                <Button Content="Dashboard" Command="{Binding ShowDashboardCommand}" />
+            </StackPanel>
+
+            <Grid Grid.Column="1"
+                  ColumnDefinitions="*,Auto,Auto"
+                  ColumnSpacing="8"
+                  IsVisible="{Binding IsWorkspaceVisible}">
+                <TextBox Grid.Column="0"
+                         Watermark="Project file path"
+                         Text="{Binding ProjectPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Grid.Column="1" Content="Load" Command="{Binding LoadProjectCommand}" />
+                <Button Grid.Column="2" Content="Save" Command="{Binding SaveProjectCommand}" />
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <views:SetupWizardView DataContext="{Binding Wizard}"
+                                   IsVisible="{Binding DataContext.IsWizardVisible, ElementName=Root}" />
+            <views:DashboardView DataContext="{Binding Dashboard}"
+                                 IsVisible="{Binding DataContext.IsDashboardVisible, ElementName=Root}" />
+
+            <Grid IsVisible="{Binding IsWorkspaceVisible}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="3*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <ScrollViewer Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                    <Grid ColumnDefinitions="Auto,3*" ColumnSpacing="16">
+                    <Border Grid.Column="0" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="8">
+                        <StackPanel>
+                            <TextBlock Text="Platforms" FontWeight="SemiBold" Margin="0,0,0,8" />
+                            <ListBox ItemsSource="{Binding Platforms}"
+                                     SelectedItem="{Binding SelectedPlatform, Mode=TwoWay}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12">
+                        <StackPanel>
+                                <StackPanel DataContext="{Binding SelectedPlatform}" x:DataType="vm:PlatformConfigurationViewModel">
+                                <TextBlock Text="Platform Details" FontWeight="SemiBold" />
+
+                                <StackPanel Margin="0,12,0,0">
+                                    <TextBlock Text="Formats" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding Formats}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding .}" />
+                                                    <Button Content="Remove"
+                                                            Command="{Binding DataContext.RemoveWorkspaceFormatCommand, ElementName=Root}"
+                                                            CommandParameter="{Binding .}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Content="Add format"
+                                            Width="120"
+                                            Margin="0,8,0,0"
+                                            Command="{Binding DataContext.AddWorkspaceFormatCommand, ElementName=Root}" />
+                                </StackPanel>
+
+                                <StackPanel Margin="0,12,0,0">
+                                    <TextBlock Text="Properties" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding Properties}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="vm:PropertyItemViewModel">
+                                                <Grid ColumnDefinitions="*,*,Auto" ColumnSpacing="8" Margin="0,4,0,0">
+                                                    <TextBox Grid.Column="0"
+                                                             Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <TextBox Grid.Column="1"
+                                                             Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Button Grid.Column="2"
+                                                            Content="Remove"
+                                                            Command="{Binding DataContext.RemoveWorkspacePropertyCommand, ElementName=Root}"
+                                                            CommandParameter="{Binding}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Button Content="Add property"
+                                            Width="120"
+                                            Margin="0,8,0,0"
+                                            Command="{Binding DataContext.AddWorkspacePropertyCommand, ElementName=Root}" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,12,0,0"
+                                        DataContext="{Binding ElementName=Root, Path=DataContext}"
+                                        x:DataType="vm:MainWindowViewModel">
+                                <TextBlock Text="Plugin Directories" FontWeight="SemiBold" />
+                                <TextBlock Text="One path per line. Relative paths resolve from the project file."
+                                           FontSize="12"
+                                           Foreground="#666"
+                                           Margin="0,4,0,0" />
+                                <TextBox Text="{Binding PluginDirectories, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True"
+                                         Height="96"
+                                         Margin="0,8,0,12"
+                                         ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                                <ContentControl Content="{Binding WindowsHostIntegration}">
+                                    <ContentControl.ContentTemplate>
+                                        <DataTemplate DataType="vm:WindowsHostIntegrationViewModel">
+                                            <StackPanel>
+                                                <TextBlock Text="Windows Host Integrations" FontWeight="SemiBold" />
+                                                <CheckBox Content="Start menu shortcut"
+                                                          IsChecked="{Binding ShortcutEnabled}" />
+                                                <StackPanel Margin="16,4,0,0" IsEnabled="{Binding ShortcutEnabled}">
+                                                    <TextBlock Text="Shortcut name" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ShortcutName, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Shortcut target" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ShortcutTarget, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Description" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ShortcutDescription, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Icon path" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ShortcutIcon, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                </StackPanel>
+
+                                                <CheckBox Content="Custom URI protocol"
+                                                          IsChecked="{Binding ProtocolEnabled}" Margin="0,12,0,0" />
+                                                <StackPanel Margin="16,4,0,0" IsEnabled="{Binding ProtocolEnabled}">
+                                                    <TextBlock Text="Protocol name" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ProtocolName, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Display name" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ProtocolDisplayName, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Command" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding ProtocolCommand, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                </StackPanel>
+
+                                                <CheckBox Content="File association"
+                                                          IsChecked="{Binding FileAssociationEnabled}" Margin="0,12,0,0" />
+                                                <StackPanel Margin="16,4,0,0" IsEnabled="{Binding FileAssociationEnabled}">
+                                                    <TextBlock Text="Extension" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding FileAssociationExtension, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="ProgId" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding FileAssociationProgId, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Description" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding FileAssociationDescription, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                    <TextBlock Text="Command" FontSize="12" Foreground="#666" />
+                                                    <TextBox Text="{Binding FileAssociationCommand, Mode=TwoWay}" Margin="0,2,0,8" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ContentControl.ContentTemplate>
+                                </ContentControl>
+
+                                <StackPanel Margin="0,12,0,0">
+                                    <TextBlock Text="Pending Property Changes" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding HostIntegrationPreview}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="#ccc" BorderThickness="0,0,0,1" Padding="0,4,0,4">
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding Key}" FontWeight="SemiBold" />
+                                                        <TextBlock Text="{Binding ChangeType}" FontSize="12" Foreground="#666" />
+                                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="#666" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+
+                                <StackPanel Margin="0,12,0,0">
+                                    <TextBlock Text="Validation Messages" FontWeight="SemiBold" />
+                                    <ItemsControl ItemsSource="{Binding HostIntegrationValidation}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Display}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    </Grid>
+                </ScrollViewer>
+
+                <views:ConfigurationHistoryView Grid.Row="1"
+                                                Grid.Column="0"
+                                                Grid.ColumnSpan="2"
+                                                Margin="0,12,0,0"
+                                                DataContext="{Binding Audit}" />
+            </Grid>
+        </Grid>
+
+        <TextBlock Grid.Row="3" Text="{Binding StatusMessage}" Foreground="#666" />
+    </Grid>
+</Window>

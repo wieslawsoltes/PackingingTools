@@ -1,0 +1,101 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PackagingTools.App.ViewModels"
+             mc:Ignorable="d"
+             x:Class="PackagingTools.App.Views.ConfigurationHistoryView"
+             x:DataType="vm:ConfigurationAuditViewModel">
+  <Design.DataContext>
+    <vm:ConfigurationAuditViewModel />
+  </Design.DataContext>
+
+  <Border BorderBrush="#333" BorderThickness="1" CornerRadius="4" Padding="12">
+    <Grid ColumnDefinitions="2*,3*" ColumnSpacing="16">
+      <StackPanel Grid.Column="0" Spacing="8">
+        <TextBlock Text="Configuration History" FontWeight="SemiBold" />
+        <ListBox ItemsSource="{Binding Snapshots}"
+                 SelectedItem="{Binding SelectedSnapshot, Mode=TwoWay}"
+                 AutomationProperties.Name="Snapshot list">
+          <ListBox.Styles>
+            <Style Selector="ListBoxItem">
+              <Setter Property="Padding" Value="6" />
+            </Style>
+          </ListBox.Styles>
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:ConfigurationSnapshotViewModel">
+              <StackPanel Orientation="Vertical" Spacing="2">
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                  <TextBlock Text="{Binding DisplayLabel}" FontWeight="SemiBold" />
+                  <TextBlock Text="Rollback" FontSize="10" Foreground="#B00020"
+                             IsVisible="{Binding IsRollbackCandidate}" />
+                </StackPanel>
+                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="#666" />
+              </StackPanel>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <TextBlock Text="Compare against:" VerticalAlignment="Center" />
+          <ComboBox Width="220"
+                    ItemsSource="{Binding Snapshots}"
+                    SelectedItem="{Binding ComparisonSnapshot, Mode=TwoWay}" />
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Refresh diff"
+                    Command="{Binding RefreshDiffCommand}"
+                    AutomationProperties.Name="Refresh diff" />
+            <Button Content="Rollback"
+                    Command="{Binding RequestRollbackCommand}"
+                    AutomationProperties.Name="Rollback to baseline snapshot" />
+          </StackPanel>
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel Grid.Column="1" Spacing="12">
+        <TextBlock Text="Diff Summary" FontWeight="SemiBold" />
+        <TextBlock Text="{Binding DiffSummary}" FontSize="12" Foreground="#666" />
+
+        <TextBlock Text="Metadata Changes" FontWeight="SemiBold" />
+        <ItemsControl ItemsSource="{Binding MetadataChanges}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:ConfigurationValueChangeViewModel">
+              <Border BorderBrush="#ddd" BorderThickness="0,0,0,1" Padding="0,4,0,4">
+                <StackPanel>
+                  <TextBlock Text="{Binding Key}" FontWeight="SemiBold" />
+                  <TextBlock Text="{Binding DisplayChange}" FontSize="12" Foreground="#666" />
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBlock Text="Platform Differences" FontWeight="SemiBold" />
+        <ItemsControl ItemsSource="{Binding PlatformChanges}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:PlatformDiffViewModel">
+              <Border BorderBrush="#ccc" BorderThickness="0,0,0,1" Padding="0,6,0,6">
+                <StackPanel Spacing="4">
+                  <TextBlock Text="{Binding Platform}" FontWeight="SemiBold" />
+                  <TextBlock Text="{Binding AddedFormats, StringFormat='Added formats: {0}', TargetNullValue='Added formats: none'}"
+                             FontSize="12" Foreground="#666" IsVisible="{Binding HasFormatChanges}" />
+                  <TextBlock Text="{Binding RemovedFormats, StringFormat='Removed formats: {0}', TargetNullValue='Removed formats: none'}"
+                             FontSize="12" Foreground="#666" IsVisible="{Binding HasFormatChanges}" />
+                  <ItemsControl ItemsSource="{Binding PropertyChanges}" IsVisible="{Binding HasPropertyChanges}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:ConfigurationValueChangeViewModel">
+                        <StackPanel>
+                          <TextBlock Text="{Binding Key}" FontWeight="SemiBold" />
+                          <TextBlock Text="{Binding DisplayChange}" FontSize="12" Foreground="#666" />
+                        </StackPanel>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+    </Grid>
+  </Border>
+</UserControl>

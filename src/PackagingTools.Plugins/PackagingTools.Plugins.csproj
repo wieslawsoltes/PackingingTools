@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Description>Plugin infrastructure and utilities for extending PackagingTools with custom providers.</Description>
+    <PackageId>PackagingTools.Plugins</PackageId>
+    <PackageTags>packaging;plugins;extensibility</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../PackagingTools.Core/PackagingTools.Core.csproj" />
+  </ItemGroup>
+</Project>
