@@ -34,8 +34,9 @@ public sealed class EnvironmentValidationService
 
     private static readonly ToolCheckDescriptor[] WindowsToolChecks =
     {
-        new("env.tool.wix.candle", "WiX candle", "candle", "Install WiX v4 and add its tools directory to PATH."),
-        new("env.tool.wix.light", "WiX light", "light", "Install WiX v4 and add its tools directory to PATH."),
+        new("env.tool.wix.heat", "WiX heat", "heat", "Install WiX 3.14+ and add its tools directory to PATH."),
+        new("env.tool.wix.candle", "WiX candle", "candle", "Install WiX 3.14+ and add its tools directory to PATH."),
+        new("env.tool.wix.light", "WiX light", "light", "Install WiX 3.14+ and add its tools directory to PATH."),
         new("env.tool.signtool", "SignTool", "signtool", "Install Windows SDK signing tools or configure remote signing."),
         new("env.tool.makeappx", "MakeAppx", "makeappx", "Install Windows SDK or MSIX Packaging Tools.")
     };

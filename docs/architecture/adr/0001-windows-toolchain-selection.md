@@ -8,7 +8,7 @@ The PackagingTools project must deliver first-class Windows packaging support th
 
 ## Decision
 - **MSIX** packaging is implemented via the Windows SDK's `makeappx.exe` utility, invoked through the `IProcessRunner` abstraction.
-- **MSI/EXE** packaging is authored with WiX v4 (`candle.exe`/`light.exe`) to retain full control over component tables and custom actions.
+- **MSI/EXE** packaging is authored with the WiX 3.14 toolset (`heat.exe`, `candle.exe`, `light.exe`) to retain full control over component tables and custom actions.
 - **App Installer** feeds are generated locally via templated XML referencing the produced MSIX artifacts.
 - **WinGet** manifests are emitted as YAML using schema-aligned fields, sourcing installer metadata from packaging outputs.
 - All tooling is orchestrated from the new `PackagingTools.Core.Windows` module, ensuring cross-surface reuse (GUI, CLI, automation).

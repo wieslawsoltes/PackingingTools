@@ -233,6 +233,7 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         var version = metadata.TryGetValue("windows.msi.productVersion", out var overriddenVersion) && !string.IsNullOrWhiteSpace(overriddenVersion)
             ? overriddenVersion!
             : context.Project.Version;
+        var normalizedVersion = NormalizeProductVersion(version);
         var sanitizedName = SanitizeDirectoryName(productName);
 
         Directory.CreateDirectory(Path.GetDirectoryName(sourcePath)!);
@@ -248,14 +249,21 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         using var writer = XmlWriter.Create(stream, settings);
 
         writer.WriteStartDocument();
-        writer.WriteStartElement("Wix", "http://wixtoolset.org/schemas/v4/wxs");
+        writer.WriteStartElement("Wix", "http://schemas.microsoft.com/wix/2006/wi");
+
+        writer.WriteStartElement("Product");
+        writer.WriteAttributeString("Id", productCode);
+        writer.WriteAttributeString("Name", productName);
+        writer.WriteAttributeString("Language", "1033");
+        writer.WriteAttributeString("Version", normalizedVersion);
+        writer.WriteAttributeString("Manufacturer", manufacturer);
+        writer.WriteAttributeString("UpgradeCode", upgradeCode);
 
         writer.WriteStartElement("Package");
-        writer.WriteAttributeString("Name", productName);
-        writer.WriteAttributeString("Manufacturer", manufacturer);
-        writer.WriteAttributeString("Version", version);
-        writer.WriteAttributeString("ProductCode", productCode);
-        writer.WriteAttributeString("UpgradeCode", upgradeCode);
+        writer.WriteAttributeString("InstallerVersion", "500");
+        writer.WriteAttributeString("Compressed", "yes");
+        writer.WriteAttributeString("InstallScope", "perMachine");
+        writer.WriteEndElement();
 
         writer.WriteStartElement("MajorUpgrade");
         writer.WriteAttributeString("DowngradeErrorMessage", $"A newer version of {productName} is already installed.");
@@ -295,7 +303,7 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         }
 
         writer.WriteEndElement(); // Feature
-        writer.WriteEndElement(); // Package
+        writer.WriteEndElement(); // Product
 
         writer.WriteStartElement("Fragment");
         writer.WriteStartElement("Directory");
@@ -532,6 +540,52 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
 
     private static string NormalizeToWindowsPath(string path)
         => path.Replace('/', '\\');
+
+    private static string NormalizeProductVersion(string version)
+    {
+        if (Version.TryParse(version, out var parsed))
+        {
+            return $"{parsed.Major}.{Math.Max(parsed.Minor, 0)}.{Math.Max(parsed.Build, 0)}";
+        }
+
+        var parts = version
+            .Split('.', StringSplitOptions.RemoveEmptyEntries)
+            .Select(ExtractLeadingInteger)
+            .Where(part => part.HasValue)
+            .Select(part => part!.Value)
+            .Take(3)
+            .ToList();
+
+        while (parts.Count < 3)
+        {
+            parts.Add(0);
+        }
+
+        return $"{parts[0]}.{parts[1]}.{parts[2]}";
+    }
+
+    private static int? ExtractLeadingInteger(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var digits = new StringBuilder();
+        foreach (var character in value)
+        {
+            if (!char.IsDigit(character))
+            {
+                break;
+            }
+
+            digits.Append(character);
+        }
+
+        return digits.Length > 0 && int.TryParse(digits.ToString(), out var parsed)
+            ? parsed
+            : null;
+    }
 
     private static string FormatInstalledCommand(string command)
     {

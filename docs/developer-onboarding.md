@@ -3,7 +3,7 @@
 ## Prerequisites
 - .NET SDK 10 (preview acceptable; ensure `dotnet --version` prints 10.x).
 - Platform tooling (install as needed):
-  - Windows: Windows SDK (makeappx, signtool) and WiX Toolset 4 (`heat`, `candle`, `light`).
+  - Windows: Windows SDK (makeappx, signtool) and WiX Toolset 3.14+ (`heat`, `candle`, `light`).
   - macOS: Xcode command-line tools providing `productbuild`, `codesign`, `notarytool`, `hdiutil`.
   - Linux: Packaging CLI dependencies (`fpm`, `appimagetool`, `flatpak-builder`, `snapcraft`, `gpg`).
 - Git LFS if large assets will be stored (optional).

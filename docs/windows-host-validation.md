@@ -3,7 +3,7 @@
 Use this checklist to exercise the `packagingtools host` workflow on a Windows runner and confirm the WiX metadata is honored end-to-end.
 
 ## Prerequisites
-- Windows 11/Windows Server 2022 runner with the WiX v4 toolset (`heat.exe`, `candle.exe`, `light.exe`) available on `PATH`.
+- Windows 11/Windows Server 2022 runner with the WiX 3.14+ toolset (`heat.exe`, `candle.exe`, `light.exe`) available on `PATH`.
 - .NET SDK 10.x preview (matching the repo) installed.
 - PowerShell 7+ recommended for strict mode support.
 
@@ -32,8 +32,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - name: Install WiX Toolset v4
-        run: choco install wix --version=4.0.1 --no-progress
+      - name: Install WiX Toolset 3.14
+        run: choco install wixtoolset --version=3.14.1.20250415 --no-progress -y
       - name: Validate host integration
         run: pwsh tools/windows/validate-host-integration.ps1
 ```

@@ -16,9 +16,9 @@ case "${platform,,}" in
   windows)
     check_tool "makeappx.exe" "Windows SDK (App Packaging)"
     check_tool "signtool.exe" "Windows SDK (signtool)"
-    check_tool "heat.exe" "WiX Toolset 4"
-    check_tool "candle.exe" "WiX Toolset 4"
-    check_tool "light.exe" "WiX Toolset 4"
+    check_tool "heat.exe" "WiX Toolset 3.14+"
+    check_tool "candle.exe" "WiX Toolset 3.14+"
+    check_tool "light.exe" "WiX Toolset 3.14+"
     ;;
   mac|macos)
     check_tool "productbuild" "Xcode Command Line Tools"

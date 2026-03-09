@@ -36,6 +36,38 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Install WiX Toolset 3.14
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          choco install wixtoolset --version=3.14.1.20250415 --no-progress -y
+
+          $candidate = @(
+            Get-ChildItem "${env:ProgramFiles(x86)}" -Directory -Filter "WiX Toolset*" -ErrorAction SilentlyContinue |
+              Sort-Object Name -Descending |
+              ForEach-Object { Join-Path $_.FullName "bin" }
+
+            if ($env:ChocolateyInstall) {
+              Get-ChildItem (Join-Path $env:ChocolateyInstall "lib") -Directory -Filter "wixtoolset*" -ErrorAction SilentlyContinue |
+                ForEach-Object {
+                  @(
+                    Join-Path $_.FullName "tools"
+                    Join-Path $_.FullName "bin"
+                    Join-Path $_.FullName "tools\\bin"
+                  )
+                }
+            }
+          ) |
+            Where-Object { Test-Path (Join-Path $_ "candle.exe") } |
+            Select-Object -First 1
+
+          if (-not $candidate) {
+            throw "Unable to locate WiX Toolset binaries after installation."
+          }
+
+          $candidate | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Get-Command heat.exe, candle.exe, light.exe | Format-Table Name, Source -AutoSize
+
       - name: Restore
         run: dotnet restore PackagingTools.sln
 

@@ -82,7 +82,7 @@
 ## 7. Dependencies & Toolchain Management
 - Manage versions for:
   - Windows SDK (MSIX tooling).
-  - WiX Toolset v4 (MSI authoring).
+  - WiX Toolset 3.14+ (MSI authoring via `heat.exe`, `candle.exe`, and `light.exe`).
   - WinGet CLI for manifest validation.
   - Signtool/Timestamp servers.
 - Build scripts (`build/win/setup.ps1`) to install/update dependencies, support offline caching, and run checks (`Get-Package`, `winget` availability).

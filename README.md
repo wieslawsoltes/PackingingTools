@@ -41,7 +41,7 @@ Cross-platform .NET 10 packaging stack for building, signing, validating, and pu
 
 | Platform | Outputs | Highlights |
 |----------|---------|------------|
-| Windows | MSIX, MSI, App Installer, WinGet manifests | WiX v4 authoring, signing via local certificates or Azure Key Vault/HSM, and host integration editing for shortcuts, protocols, shell extensions, tasks, and services |
+| Windows | MSIX, MSI, App Installer, WinGet manifests | WiX 3.14 authoring (`heat.exe`, `candle.exe`, `light.exe`), signing via local certificates or Azure Key Vault/HSM, and host integration editing for shortcuts, protocols, shell extensions, tasks, and services |
 | macOS | `.app`, `.pkg`, `.dmg` | Bundle materialization, signing, notarization, entitlement handling, provisioning assets, verification, and audit evidence capture |
 | Linux | DEB, RPM, AppImage, Flatpak, Snap | Repository metadata publishing, container-oriented build scripts, sandbox profiles, SBOM generation, and vulnerability evidence gating |
 

@@ -9,9 +9,9 @@ switch ($Platform.ToLowerInvariant()) {
         $tools = @{
             "makeappx.exe" = "Windows SDK (App Packaging Tools)"
             "signtool.exe" = "Windows SDK (signtool)"
-            "heat.exe" = "WiX Toolset 4"
-            "candle.exe" = "WiX Toolset 4"
-            "light.exe" = "WiX Toolset 4"
+            "heat.exe" = "WiX Toolset 3.14+"
+            "candle.exe" = "WiX Toolset 3.14+"
+            "light.exe" = "WiX Toolset 3.14+"
         }
     }
     "mac" {

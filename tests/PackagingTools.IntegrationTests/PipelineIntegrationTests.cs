@@ -126,14 +126,18 @@ public sealed class PipelineIntegrationTests : IDisposable
         Assert.Contains(result.Artifacts, a => a.Format == "msi");
         var wixSource = result.Artifacts.First(a => a.Format == "msi").Metadata["wixSource"];
         var wixContent = XDocument.Load(wixSource);
-        var wixNs = XNamespace.Get("http://wixtoolset.org/schemas/v4/wxs");
+        var wixNs = XNamespace.Get("http://schemas.microsoft.com/wix/2006/wi");
 
-        var package = wixContent.Root?.Element(wixNs + "Package");
+        var product = wixContent.Root?.Element(wixNs + "Product");
+        Assert.NotNull(product);
+        Assert.Equal("SampleWinApp", product!.Attribute("Name")?.Value);
+        Assert.Equal("Contoso", product.Attribute("Manufacturer")?.Value);
+        Assert.Equal("1.2.3", product.Attribute("Version")?.Value);
+
+        var package = product.Element(wixNs + "Package");
         Assert.NotNull(package);
-        Assert.Equal("SampleWinApp", package!.Attribute("Name")?.Value);
-        Assert.Equal("Contoso", package.Attribute("Manufacturer")?.Value);
 
-        var feature = package.Element(wixNs + "Feature");
+        var feature = product.Element(wixNs + "Feature");
         Assert.NotNull(feature);
         var featureRefs = feature!.Elements(wixNs + "ComponentGroupRef")
             .Select(e => e.Attribute("Id")?.Value)
