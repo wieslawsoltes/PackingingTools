@@ -1,105 +1,87 @@
 # PackagingTools
 
-PackagingTools is a cross-platform packaging ecosystem that unifies installer generation, signing, policy enforcement, and operational telemetry for Windows, macOS, and Linux applications. It combines an Avalonia desktop experience, a rich CLI, and an embeddable .NET SDK so teams can deliver compliant packages from laptops, CI/CD pipelines, or fully automated release services.
+Cross-platform .NET 10 packaging stack for building, signing, validating, and publishing Windows, macOS, and Linux application installers from a shared project model. PackagingTools combines an Avalonia desktop app, a .NET global tool, reusable SDK packages, and platform-specific engines so the same workflow can run locally or inside CI/CD.
 
-## At a Glance
-- Single project model for MSIX/MSI/App Installer, notarized `.app`/`.pkg`/`.dmg`, and DEB/RPM/AppImage/Flatpak outputs.
-- Built-in governance: identity-aware approvals, policy gates, SBOM + vulnerability evidence, remote signing.
-- Reusable automation: CLI for scripting, SDK for orchestration services, CI starter templates, and plugin discovery.
-- Operational insight: shared telemetry aggregator powering dashboards, audit trails, and diagnostics bundles.
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com)
+[![Avalonia](https://img.shields.io/badge/Avalonia-11.x-8B44AC)](https://avaloniaui.net)
+[![CI](https://img.shields.io/github/actions/workflow/status/wieslawsoltes/PackingingTools/ci.yml?branch=main)](https://github.com/wieslawsoltes/PackingingTools/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/wieslawsoltes/PackingingTools/blob/main/LICENSE)
 
-## Contents
-- [Solution Components](#solution-components)
-- [Key Capabilities](#key-capabilities)
-- [Supported Packaging Workflows](#supported-packaging-workflows)
-- [Security, Identity, and Compliance](#security-identity-and-compliance)
-- [Telemetry and Observability](#telemetry-and-observability)
-- [Plugin Ecosystem](#plugin-ecosystem)
-- [Getting Started](#getting-started)
-- [CLI Usage](#cli-usage)
-- [Desktop App](#desktop-app)
-- [Embedding with the .NET SDK](#embedding-with-the-net-sdk)
-- [Project Configuration](#project-configuration)
-- [CI/CD Integration](#cicd-integration)
-- [Repository Layout](#repository-layout)
-- [Contributing & Next Steps](#contributing--next-steps)
+## NuGet Packages
+
+### Primary packages
+
+| Package | NuGet | Description |
+|---------|-------|-------------|
+| **PackagingTools.Core** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Core.svg)](https://www.nuget.org/packages/PackagingTools.Core) | Shared orchestration engine, project model, policy services, security primitives, audit, and telemetry |
+| **PackagingTools.Core.Windows** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Core.Windows.svg)](https://www.nuget.org/packages/PackagingTools.Core.Windows) | Windows packaging providers for MSIX/MSI/App Installer flows, signing, and host integration |
+| **PackagingTools.Core.Mac** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Core.Mac.svg)](https://www.nuget.org/packages/PackagingTools.Core.Mac) | macOS packaging providers for `.app`, `.pkg`, `.dmg`, notarization, and entitlement workflows |
+| **PackagingTools.Core.Linux** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Core.Linux.svg)](https://www.nuget.org/packages/PackagingTools.Core.Linux) | Linux packaging providers for DEB/RPM/AppImage/Flatpak/Snap, repositories, SBOM, and vulnerability evidence |
+| **PackagingTools.Plugins** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Plugins.svg)](https://www.nuget.org/packages/PackagingTools.Plugins) | Extensibility contracts and helpers for runtime-loaded format, signing, policy, and telemetry plugins |
+| **PackagingTools.Sdk** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Sdk.svg)](https://www.nuget.org/packages/PackagingTools.Sdk) | High-level .NET client API for embedding PackagingTools orchestration into custom services and release systems |
+| **PackagingTools.Cli** | [![NuGet](https://img.shields.io/nuget/v/PackagingTools.Cli.svg)](https://www.nuget.org/packages/PackagingTools.Cli) | .NET global tool for packaging runs, host integration automation, policy validation, and scripted release flows |
+
+`src/PackagingTools.App` is the desktop host and is intentionally not published as a NuGet package.
 
 ## Solution Components
-- `src/PackagingTools.App` – Avalonia desktop workspace with onboarding wizard, environment validation, configuration editors, telemetry dashboards, and host integration tooling.
-- `src/PackagingTools.Cli` – Cross-platform CLI mirroring GUI workflows; commands for packaging runs, Windows host metadata, and identity bootstrap.
-- `src/PackagingTools.Core` – Shared orchestration engine (pipelines, policy, signing, secure store, telemetry, audit).
-- `src/PackagingTools.Core.Windows|Mac|Linux` – Platform-specific pipelines and format providers.
-- `src/PackagingTools.Plugins` – Base contracts plus helper utilities for runtime-loaded extensions.
-- `src/PackagingTools.Sdk` – High-level `PackagingClient` facade for embedding orchestration in custom services.
-- `build/` – Bootstrap scripts, dependency acquisition helpers, and reusable CI templates.
-- `docs/` – Deep-dive guidance (platform blueprints, configuration schema, identity, security, plugin setup).
-- `samples/` – Ready-to-run project definitions such as `samples/sample-project.json` to exercise pipelines.
-- `tests/` – Unit, integration, and scenario suites covering pipelines, security, identity, telemetry, plugins, and host integration logic.
 
-## Key Capabilities
-- **Unified Project Schema** – JSON-based project descriptions (`PackagingProject`) shared across GUI, CLI, SDK, and plugins with schema validation under `docs/configuration/schema.json`.
-- **Policy Enforcement** – `IPolicyEvaluator` blocks packaging when approvals, signing assets, SBOMs, or vulnerability scans violate governance thresholds.
-- **Identity-Aware Operations** – Pluggable `IIdentityService` providers (Azure AD, Okta, local) ensure RBAC, MFA enforcement, and scoped access tokens across hosts.
-- **Secure Secrets** – `ISecureStore` abstractions wrap OS keychains or remote vaults for certificates, tokens, and signing keys.
-- **Remote/Local Build Agents** – `IBuildAgentBroker` negotiates agents for each platform, supporting local execution and future remote pools.
-- **Extensibility-First** – `IPackageFormatProvider`, `ISigningService`, `ISbomGenerator`, `IVulnerabilityScanner`, and plugin adapters keep the core lightweight while enabling bespoke integrations.
+| Area | Path / Package | Responsibility |
+|------|----------------|----------------|
+| Desktop app | `src/PackagingTools.App` | Avalonia workspace for onboarding, project authoring, environment validation, dashboards, and operator workflows |
+| CLI | `src/PackagingTools.Cli` | Scriptable entry point for package generation, validation, signing, and Windows host integration automation |
+| Shared core | `src/PackagingTools.Core` | Common project model, orchestration pipeline, policy engine, secure storage, audit, and telemetry services |
+| Platform engines | `src/PackagingTools.Core.Windows`, `src/PackagingTools.Core.Mac`, `src/PackagingTools.Core.Linux` | Platform-specific packaging providers, tool abstractions, signing integrations, and format-specific artifacts |
+| SDK | `src/PackagingTools.Sdk` | Embeddable API surface centered on `PackagingClient` and `PackagingRunOptions` |
+| Plugins | `src/PackagingTools.Plugins` | Extensibility contracts for external format providers, signing adapters, telemetry sinks, and enterprise integrations |
+| Build and CI | `build/` | Bootstrap scripts, tool checks, and reusable GitHub Actions starter templates |
+| Docs | `docs/` | Architecture, configuration schema, onboarding, CI, identity, security, and platform guidance |
+| Samples and tests | `samples/`, `tests/` | Reference project definitions plus integration coverage for Windows, macOS, Linux, plugins, policy, telemetry, and SDK scenarios |
 
 ## Supported Packaging Workflows
-### Windows (`docs/windows-packaging-suite.md`)
-- MSIX/AppX packaging with manifest templating and App Installer feed generation.
-- MSI/EXE authoring via WiX v4, bootstrapper support, and optional Advanced Installer plugins.
-- WinGet manifest creation and validation.
-- Host integration editing (`packagingtools host`) for shortcuts, URI handlers, shell extensions, and task/service definitions.
-- Signing via local certificates or Azure Key Vault/HSM connectors with rotation alerts.
 
-### macOS (`docs/packaging-tools-plan.md`, `docs/architecture/adr/0003-macos-toolchain-selection.md`)
-- `.app` bundle materialisation, notarised `.pkg` and `.dmg` generation, entitlement management, and provisioning profile automation.
-- Remote signing/notarization workflows with progress polling and evidence capture.
-- Secure store-backed credential management with AES-GCM encryption.
+| Platform | Outputs | Highlights |
+|----------|---------|------------|
+| Windows | MSIX, MSI, App Installer, WinGet manifests | WiX v4 authoring, signing via local certificates or Azure Key Vault/HSM, and host integration editing for shortcuts, protocols, shell extensions, tasks, and services |
+| macOS | `.app`, `.pkg`, `.dmg` | Bundle materialization, signing, notarization, entitlement handling, provisioning assets, verification, and audit evidence capture |
+| Linux | DEB, RPM, AppImage, Flatpak, Snap | Repository metadata publishing, container-oriented build scripts, sandbox profiles, SBOM generation, and vulnerability evidence gating |
 
-### Linux (`docs/linux/repository-publishing.md`, `docs/linux/container-builds.md`, `docs/linux/security-artifacts.md`)
-- DEB/RPM/AppImage/Flatpak/Snap packaging with reproducible containerised build scripts.
-- Repository metadata (APT/YUM) generation for multi-channel publishing.
-- SBOM and vulnerability evidence bundles (`_Sbom/`, `security.vuln.*` issues) with policy-controlled gating.
+## Features
 
-## Security, Identity, and Compliance
-- **Identity Architecture** – See `docs/identity/identity-architecture.md`. Azure AD and Okta providers surface roles (Admin, SecurityOfficer, ReleaseEngineer, Developer) and enforce MFA when required.
-- **Policy Engine** – Declarative JSON/YAML rules manage approvals, required scanners, signing freshness, and artifact retention.
-- **SBOM & Vulnerability Scanning** – `ISbomGenerator` (CycloneDX JSON by default) and `IVulnerabilityScanner` (Trivy stub) emit artifacts and issues for compliance export (see `docs/security/vulnerability-sbom-architecture.md`).
-- **Secure Stores** – `FileSecureStore` plus provider hooks keep certificates, tokens, and secrets off disk in plain text; compatible with OS vaults and cloud key stores.
-- **Audit Trails** – Pipelines record issues, signing receipts, and identity principals for downstream attestations and evidence packages.
-
-## Telemetry and Observability
-- `DashboardTelemetryAggregator` (under `src/PackagingTools.Core/Telemetry`) normalises pipeline events, signing health, and dependency signals.
-- Shared dashboard state persists via `DashboardTelemetryStore`, surfaced in the GUI and consumable via the SDK.
-- Telemetry events include packaging job summaries, format-level dependency timings, repository updates, and security findings, enabling real-time dashboards and historical exports.
-- Diagnostics bundles capture tool output, telemetry snapshots, and agent health for support scenarios.
-
-## Plugin Ecosystem
-- Manifests (`*.json`) declare plugin assemblies and optional explicit types. Disabled manifests remain discoverable but are skipped at runtime (see `docs/plugins/configuration.md`).
-- Probing order: runtime overrides (`PackagingClientOptions.PluginDirectories`, `PackagingRunOptions.PluginDirectories`), project metadata (`plugins.directories`), environment `PACKAGINGTOOLS_PLUGIN_PATHS`, then default app/user plugin folders.
-- Plugins can register DI services, new format providers, policy evaluators, telemetry sinks, or CLI command enrichments through `PluginManager`.
-- Integration tests (`tests/PackagingTools.IntegrationTests/Plugins/SamplePackageFormatPlugin.cs`) showcase minimal scaffolding for new format providers.
+- **Shared project schema** with JSON configuration consumed consistently by the app, CLI, SDK, and plugins. The schema lives at [docs/configuration/schema.json](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/configuration/schema.json).
+- **Policy-driven packaging** through `IPolicyEvaluator`, allowing approval checks, signing requirements, SBOM rules, vulnerability thresholds, and retention constraints to block unsafe releases.
+- **Identity-aware operations** via pluggable identity services and secure stores for certificates, tokens, provisioning materials, and signing secrets.
+- **Extensible packaging pipeline** with plugin hooks for new formats, signing providers, telemetry sinks, vulnerability scanners, and organization-specific automation.
+- **Operational telemetry and audit trails** through the dashboard aggregation model, diagnostics bundles, packaging evidence, and verification results.
+- **Local and CI parity** so the same project definition, property model, and policy behavior apply on developer machines and in build pipelines.
 
 ## Getting Started
-1. **Install prerequisites**  
-   - .NET SDK 10 (preview OK).  
-   - Platform tooling as outlined in `docs/developer-onboarding.md` (`build/scripts/check-tools.ps1|.sh` help verify).
-2. **Clone and build**
-   ```bash
-   git clone https://github.com/<org>/PackagingTools.git
-   cd PackagingTools
-   dotnet build PackagingTools.sln
-   ```
-3. **Run tests**
-   ```bash
-   dotnet test PackagingTools.sln
-   ```
-4. **Explore samples**  
-   Use `samples/sample-project.json` as a starting point. Copy it into your project and adjust metadata/properties before invoking the CLI, GUI, or SDK.
+
+1. Install the .NET 10 SDK and platform tooling described in [Developer Onboarding](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/developer-onboarding.md).
+2. Clone the repository and build the solution:
+
+```bash
+git clone https://github.com/wieslawsoltes/PackingingTools.git
+cd PackingingTools
+dotnet build PackagingTools.sln -c Release
+```
+
+3. Run the integration suite:
+
+```bash
+dotnet test tests/PackagingTools.IntegrationTests/PackagingTools.IntegrationTests.csproj -c Release
+```
+
+4. Produce NuGet artifacts locally:
+
+```bash
+dotnet pack PackagingTools.sln -c Release
+```
+
+Local packages are written to `artifacts/nuget`.
 
 ## CLI Usage
-The CLI is available via `dotnet run` during development and will ship as a .NET global tool.
+
+During development you can run the CLI directly:
 
 ```bash
 dotnet run --project src/PackagingTools.Cli -- pack \
@@ -111,77 +93,70 @@ dotnet run --project src/PackagingTools.Cli -- pack \
   --property windows.signing.certificatePath=certs/code-sign.pfx
 ```
 
-### Commands
-- `pack`: Execute packaging pipelines for the selected platform and formats. Accepts `--configuration`, `--property key=value`, `--output`, and `--save-project`. Properties merge with project defaults.
-- `host`: Preview and optionally persist Windows host integration metadata. Provides property-level diff output and validation messages before applying.
-- `identity login`: Acquire tokens (Azure AD, Okta, local) and persist them in the secure store so subsequent pack runs inherit identity context.
+After publishing, install the tool from NuGet:
 
-Exit codes: `0` (success with optional warnings) and `1` (validation or pipeline failure).
+```bash
+dotnet tool install --global PackagingTools.Cli
+```
 
-## Desktop App
-- Avalonia-based workspace mirroring CLI capabilities with added context—multi-step onboarding wizard, environment validation (`EnvironmentValidationService`), property editors, telemetry dashboards, and Windows host integration UI.
-- Accessibility investments include keyboard-first navigation, screen-reader annotations, and color contrast compliance (see `docs/pre-mvp-tasks.md` milestones).
-- Workspace saves the same project JSON consumed by CLI/SDK, ensuring seamless handoff between experiences.
+Common commands:
 
-## Embedding with the .NET SDK
-Use `PackagingTools.Sdk` to orchestrate packaging from custom automation:
+- `pack` executes packaging pipelines for the selected platform and formats.
+- `host` previews and applies Windows host integration metadata with diff-oriented output.
+- `identity login` acquires and stores credentials for identity-aware packaging flows.
+
+## SDK Usage
+
+`PackagingTools.Sdk` exposes the same orchestration model to custom services and automation hosts:
 
 ```csharp
 using PackagingTools.Core.Models;
 using PackagingTools.Sdk;
 
-var client = PackagingClient.CreateDefault(options =>
-{
-    options.PluginDirectories.Add("/opt/packaging-plugins");
-});
+var client = PackagingClient.CreateDefault();
 
 var run = new PackagingRunOptions("./projects/sample.json", PackagingPlatform.Windows)
 {
     Configuration = "Release",
     OutputDirectory = "./artifacts/windows"
 };
+
 run.Formats.Add("msi");
 run.Properties["windows.signing.azureKeyVaultCertificate"] = "contoso-signing-cert";
 
 var result = await client.PackAsync(run);
-if (!result.Success)
-{
-    foreach (var issue in result.Issues)
-    {
-        Console.Error.WriteLine($"{issue.Severity}: {issue.Code} - {issue.Message}");
-    }
-}
 ```
 
-SDK options let you swap policy evaluators, build agent brokers, telemetry channels, and platform registrations. See `docs/sdk/embedding-packagingtools.md` for advanced usage.
+See [docs/sdk/embedding-packagingtools.md](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/sdk/embedding-packagingtools.md) for advanced composition and host customization.
 
-## Project Configuration
-- Projects persist as JSON (see `docs/configuration/index.md`) with global `metadata`, per-platform `formats`, and provider `properties`.
-- CLI `--property` arguments override stored values without mutating the source file unless `--save-project` is supplied.
-- Plugin directories can be stored in `metadata["plugins.directories"]`, edited via the GUI or directly in JSON.
-- Security, signing, and repository behaviours are customised via namespaced property keys (`windows.signing.*`, `mac.notarization.*`, `linux.repo.*`, `security.*`).
+## CI/CD and Release Flow
 
-## CI/CD Integration
-- GitHub Actions starter templates live under `build/templates/github-actions` for Windows, macOS, and Linux runners. They bootstrap tooling, run `packagingtools pack`, and publish outputs.
-- Scripts in `build/scripts/` validate prerequisites (`check-tools`), download dependencies, and prepare offline caches.
-- Combine with `docs/ci/starter-templates.md` guidance to adapt workflows for Azure Pipelines, GitLab CI, or bespoke orchestrators.
-- Telemetry and policy enforcement behave identically in CI and local runs, ensuring consistent governance.
+- `CI` builds and tests the solution on Linux, macOS, and Windows, then packs all NuGet packages on Ubuntu and uploads both `.nupkg` and `.snupkg` artifacts.
+- `Release` runs the same validation on tag pushes matching `v*`, packs all publishable projects with the tag version, pushes packages to NuGet.org when `NUGET_API_KEY` is configured, and creates a GitHub release with generated release notes.
+- Reusable starter workflows for packaging jobs live under `build/templates/github-actions/` and are documented in [docs/ci/starter-templates.md](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/ci/starter-templates.md).
+
+## Documentation
+
+- [Solution architecture](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/architecture/solution-architecture.md)
+- [Windows packaging suite](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/windows-packaging-suite.md)
+- [Configuration guide](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/configuration/index.md)
+- [Plugin configuration](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/plugins/configuration.md)
+- [Identity architecture](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/identity/identity-architecture.md)
+- [Security and SBOM architecture](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/security/vulnerability-sbom-architecture.md)
+- [Packaging roadmap](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/packaging-tools-plan.md)
 
 ## Repository Layout
-```
-PackagingTools/
-├── src/                # App, CLI, core libraries, SDK, platform modules, plugins
-├── build/              # Bootstrap scripts, CI templates, infra helpers
-├── tools/              # Auxiliary diagnostics and utilities
-├── tests/              # Unit/integration/e2e suites
-├── samples/            # Reference projects and payloads
-└── docs/               # Architecture, platform blueprints, policies, onboarding
+
+```text
+PackingingTools/
+├── src/                # App, CLI, SDK, core libraries, platform engines, plugin contracts
+├── build/              # Bootstrap scripts, tool checks, CI templates
+├── docs/               # Architecture, onboarding, CI, security, identity, platform guidance
+├── samples/            # Sample project definitions and payload references
+├── tests/              # Integration coverage and scenario validation
+└── tools/              # Auxiliary utilities and diagnostics
 ```
 
-## Contributing & Next Steps
-- Follow `docs/developer-onboarding.md` for environment setup, then use `dotnet format` and `dotnet test` before submitting PRs.
-- Add integration test coverage when introducing new format providers, signing adapters, or policy rules (`tests/PackagingTools.IntegrationTests` contains helpful stubs and doubles).
-- Update architecture decision records under `docs/architecture/adr/` when changing platform strategy, persistence, or plugin models.
-- Planned work items include expanded accessibility coverage, macOS entitlement tooling, Linux sandbox/profile editing, and extended telemetry exports—see `docs/pre-mvp-tasks.md` and `docs/packaging-tools-plan.md` for roadmap context.
+## Contributing
 
-For detailed walkthroughs, dive into the platform blueprints and architecture documents inside `docs/`. Contributions, feedback, and bug reports are welcome via issues or pull requests.
+Use the onboarding guide to set up the toolchain, then run `dotnet build`, `dotnet test`, and `dotnet pack` before opening a pull request. When changing packaging behavior, update the relevant docs and add integration coverage under `tests/PackagingTools.IntegrationTests`.

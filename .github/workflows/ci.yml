@@ -2,96 +2,104 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
-  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  DOTNET_VERSION: '10.0.x'
   DOTNET_NOLOGO: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build-linux:
-    name: Build Linux modules
+  build-test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore
+        run: dotnet restore PackagingTools.sln
+
+      - name: Build
+        run: dotnet build PackagingTools.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/PackagingTools.IntegrationTests/PackagingTools.IntegrationTests.csproj -c Release --no-build --logger "trx;LogFileName=integration-tests-${{ runner.os }}.trx" --results-directory ./test-results
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ runner.os }}
+          path: test-results/
+          if-no-files-found: error
+          retention-days: 7
+
+  pack:
+    name: Pack NuGet
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-          include-prerelease: true
-      - name: Restore
-        run: dotnet restore PackagingTools.sln
-      - name: Build Linux core
-        run: dotnet build src/PackagingTools.Core.Linux/PackagingTools.Core.Linux.csproj --configuration Release --no-restore
-      - name: Pack Linux core
-        run: dotnet pack src/PackagingTools.Core.Linux/PackagingTools.Core.Linux.csproj --configuration Release --no-build --output artifacts/nuget/linux
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nuget-linux
-          path: artifacts/nuget/linux
+    needs: build-test
 
-  build-macos:
-    name: Build macOS modules
-    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-          include-prerelease: true
-      - name: Restore
-        run: dotnet restore PackagingTools.sln
-      - name: Build macOS core
-        run: dotnet build src/PackagingTools.Core.Mac/PackagingTools.Core.Mac.csproj --configuration Release --no-restore
-      - name: Pack macOS core
-        run: dotnet pack src/PackagingTools.Core.Mac/PackagingTools.Core.Mac.csproj --configuration Release --no-build --output artifacts/nuget/macos
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nuget-macos
-          path: artifacts/nuget/macos
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  build-windows:
-    name: Build Windows modules
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
-          include-prerelease: true
-      - name: Restore
-        run: dotnet restore PackagingTools.sln
-      - name: Build Windows core
-        run: dotnet build src/PackagingTools.Core.Windows/PackagingTools.Core.Windows.csproj --configuration Release --no-restore
-      - name: Pack Windows core
-        run: dotnet pack src/PackagingTools.Core.Windows/PackagingTools.Core.Windows.csproj --configuration Release --no-build --output artifacts/nuget/windows
-      - uses: actions/upload-artifact@v4
-        with:
-          name: nuget-windows
-          path: artifacts/nuget/windows
+          dotnet-version: ${{ env.DOTNET_VERSION }}
 
-  pack-all:
-    name: Pack all NuGet artifacts
-    runs-on: ubuntu-latest
-    needs:
-      - build-linux
-      - build-macos
-      - build-windows
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-          include-prerelease: true
       - name: Restore
         run: dotnet restore PackagingTools.sln
-      - name: Pack solution
-        run: dotnet pack PackagingTools.sln --configuration Release --output artifacts/nuget
-      - uses: actions/upload-artifact@v4
+
+      - name: Pack NuGet packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          projects=(
+            "src/PackagingTools.Core/PackagingTools.Core.csproj"
+            "src/PackagingTools.Core.Windows/PackagingTools.Core.Windows.csproj"
+            "src/PackagingTools.Core.Mac/PackagingTools.Core.Mac.csproj"
+            "src/PackagingTools.Core.Linux/PackagingTools.Core.Linux.csproj"
+            "src/PackagingTools.Plugins/PackagingTools.Plugins.csproj"
+            "src/PackagingTools.Sdk/PackagingTools.Sdk.csproj"
+            "src/PackagingTools.Cli/PackagingTools.Cli.csproj"
+          )
+
+          for project in "${projects[@]}"; do
+            dotnet pack "$project" -c Release --no-restore -o artifacts/nuget
+          done
+
+      - name: List packages
+        shell: bash
+        run: ls -la artifacts/nuget
+
+      - name: Upload NuGet artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: nuget-all
-          path: artifacts/nuget
+          name: nuget-packages
+          path: |
+            artifacts/nuget/*.nupkg
+            artifacts/nuget/*.snupkg
+          if-no-files-found: error
+          retention-days: 7
