@@ -327,7 +327,7 @@ public sealed class PipelineIntegrationTests : IDisposable
 
         var result = await pipeline.ExecuteAsync(request);
 
-        Assert.True(result.Success);
+        Assert.True(result.Success, $"Packaging issues:{Environment.NewLine}{FormatIssues(result.Issues)}");
         var artifact = Assert.Single(result.Artifacts, a => a.Format == "msi");
         Assert.True(File.Exists(artifact.Path));
     }
@@ -1352,4 +1352,7 @@ public sealed class PipelineIntegrationTests : IDisposable
         Assert.True(File.Exists(scriptPath));
         Assert.Contains(result.Issues, i => i.Code == "linux.container.script_generated");
     }
+
+    private static string FormatIssues(IReadOnlyCollection<PackagingIssue> issues)
+        => string.Join(Environment.NewLine, issues.Select(i => $"{i.Severity}:{i.Code}:{i.Message}"));
 }
