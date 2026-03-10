@@ -378,8 +378,13 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
 
             writer.WriteEndElement(); // Shortcut
 
+            writer.WriteStartElement("RemoveFolder");
+            writer.WriteAttributeString("Id", "ApplicationShortcutFolder");
+            writer.WriteAttributeString("On", "uninstall");
+            writer.WriteEndElement(); // RemoveFolder
+
             writer.WriteStartElement("RegistryValue");
-            writer.WriteAttributeString("Root", "HKCU");
+            writer.WriteAttributeString("Root", "HKMU");
             writer.WriteAttributeString("Key", $@"Software\\PackagingTools\\{sanitizedName}");
             writer.WriteAttributeString("Name", "installed");
             writer.WriteAttributeString("Type", "integer");

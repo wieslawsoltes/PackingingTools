@@ -153,6 +153,16 @@ public sealed class PipelineIntegrationTests : IDisposable
         Assert.Equal("[INSTALLFOLDER]Sample.exe", shortcut.Attribute("Target")?.Value);
         Assert.Equal(@"[INSTALLFOLDER]Assets\Square150x150Logo.png", shortcut.Attribute("Icon")?.Value);
 
+        var shortcutComponent = wixContent.Descendants(wixNs + "Component")
+            .Single(e => e.Attribute("Id")?.Value == "ApplicationShortcutComponent");
+        var shortcutKeyPath = shortcutComponent.Elements(wixNs + "RegistryValue")
+            .Single(e => string.Equals(e.Attribute("Name")?.Value, "installed", StringComparison.Ordinal));
+        Assert.Equal("HKMU", shortcutKeyPath.Attribute("Root")?.Value);
+        Assert.Contains(
+            shortcutComponent.Elements(wixNs + "RemoveFolder"),
+            e => string.Equals(e.Attribute("Id")?.Value, "ApplicationShortcutFolder", StringComparison.Ordinal) &&
+                 string.Equals(e.Attribute("On")?.Value, "uninstall", StringComparison.Ordinal));
+
         var protocolComponent = wixContent.Descendants(wixNs + "Component")
             .Single(e => e.Attribute("Id")?.Value == "ProtocolComponent");
         Assert.Contains(
