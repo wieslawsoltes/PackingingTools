@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">PackagingTools logo</title>
+  <desc id="desc">A layered shipping box with a tooling spark accent.</desc>
+  <defs>
+    <linearGradient id="box" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f6cbd"/>
+      <stop offset="100%" stop-color="#084c8d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffd166"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="#f5f9ff"/>
+  <path d="M128 30 207 70v115l-79 41-79-41V70l79-40Z" fill="url(#box)"/>
+  <path d="M128 30v86l79-46" fill="none" stroke="#dcedff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/>
+  <path d="M128 116 49 70" fill="none" stroke="#dcedff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/>
+  <path d="M128 116v110" fill="none" stroke="#dcedff" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/>
+  <path d="m171 52 12 12 12-12 8 8-12 12 12 12-8 8-12-12-12 12-8-8 12-12-12-12Z" fill="url(#accent)"/>
+</svg>

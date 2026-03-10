@@ -1,0 +1,359 @@
+/* PackagingTools brand polish on top of Lunet template defaults. */
+
+:root {
+  --pt-accent: #0f6cbd;
+  --pt-accent-strong: #084c8d;
+  --pt-accent-soft: #eef6ff;
+  --pt-highlight: #ffb000;
+  --pt-success: #16856d;
+  --pt-card-radius: 16px;
+  --pt-shadow-soft: 0 12px 30px rgba(15, 35, 60, 0.08);
+  --pt-shadow-strong: 0 18px 40px rgba(15, 35, 60, 0.16);
+}
+
+:root[data-bs-theme="dark"] {
+  --pt-accent: #58a6ff;
+  --pt-accent-strong: #9fd0ff;
+  --pt-accent-soft: rgba(15, 108, 189, 0.18);
+  --pt-highlight: #ffd166;
+  --pt-success: #56c9aa;
+  --pt-shadow-soft: 0 12px 30px rgba(0, 0, 0, 0.28);
+  --pt-shadow-strong: 0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+body {
+  min-height: 100vh;
+  background-image:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--pt-accent) 11%, transparent), transparent 40%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bs-body-bg) 97%, var(--pt-accent-soft)), var(--bs-body-bg));
+}
+
+#lunet {
+  max-width: 1460px;
+}
+
+#lunet .lunet-logo {
+  width: auto;
+  height: 72px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.12));
+}
+
+#lunet .navbar {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--bs-border-color) 82%, transparent);
+  backdrop-filter: saturate(130%) blur(8px);
+}
+
+#lunet .navbar .nav-link {
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+#lunet .navbar .nav-link:hover {
+  background: color-mix(in srgb, var(--pt-accent) 15%, transparent);
+}
+
+#lunet li.nav-item.active {
+  border-bottom: none;
+}
+
+#lunet li.nav-item.active > .nav-item-row > .nav-link {
+  color: var(--pt-accent-strong);
+  background: color-mix(in srgb, var(--pt-accent) 18%, transparent);
+}
+
+#lunet .navbar .lunet-search .input-group {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bs-border-color) 75%, transparent);
+  border-radius: 0.75rem;
+}
+
+#lunet .lunet-theme-toggle {
+  border-radius: 0.75rem;
+}
+
+#lunet .navbar-right .btn-info {
+  border-radius: 0.75rem;
+  border-color: color-mix(in srgb, var(--pt-accent) 40%, var(--bs-border-color));
+  background: color-mix(in srgb, var(--pt-accent) 22%, transparent);
+  color: var(--bs-body-color);
+}
+
+#lunet .navbar-right .btn-info:hover {
+  background: color-mix(in srgb, var(--pt-accent) 34%, transparent);
+}
+
+#lunet .menu,
+#lunet .breadcrumb {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+#lunet .menu .menu {
+  margin-top: 0.35rem;
+  margin-left: 0.8rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid color-mix(in srgb, var(--bs-border-color) 75%, transparent);
+}
+
+#lunet .menu-item {
+  margin: 0.1rem 0;
+}
+
+#lunet .menu-link,
+#lunet .breadcrumb-link {
+  text-decoration: none;
+}
+
+#lunet .menu-link:hover,
+#lunet .breadcrumb-link:hover {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+}
+
+#lunet .menu-item.active > .menu-item-row > .menu-link {
+  font-weight: 600;
+  color: var(--pt-accent-strong);
+}
+
+#docs-sidebar-menu.menu-sidebar,
+#docs-sidebar-toc.menu-sidebar {
+  max-height: calc(100vh - 6.25rem);
+  overflow: auto;
+  padding-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  border-radius: var(--pt-card-radius);
+  box-shadow: var(--pt-shadow-soft);
+}
+
+#docs-sidebar-menu .offcanvas-body,
+#docs-sidebar-toc {
+  background: color-mix(in srgb, var(--bs-body-bg) 93%, var(--pt-accent-soft));
+}
+
+#docs-sidebar-toc .js-toc {
+  font-size: 0.92rem;
+}
+
+#docs-sidebar-toc .toc-list {
+  margin: 0;
+  padding-left: 0.85rem;
+  list-style: none;
+}
+
+#docs-sidebar-toc .toc-link {
+  text-decoration: none;
+  color: var(--bs-body-color);
+}
+
+#docs-sidebar-toc .is-active-link {
+  font-weight: 700;
+  color: var(--pt-accent-strong);
+}
+
+#lunet .lunet-articles .js-toc-content,
+#lunet .lunet-api .js-toc-content {
+  background: color-mix(in srgb, var(--bs-body-bg) 95%, var(--pt-accent-soft));
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  border-radius: var(--pt-card-radius);
+  padding: 1.25rem 1.3rem 1.4rem;
+  box-shadow: var(--pt-shadow-soft);
+}
+
+#lunet h1 {
+  letter-spacing: -0.02em;
+}
+
+#lunet h2 {
+  margin-top: 1.7rem;
+}
+
+#lunet h1,
+#lunet h2,
+#lunet h3 {
+  scroll-margin-top: 7rem;
+}
+
+#lunet blockquote {
+  border-radius: 0.7rem;
+  border-left-width: 4px;
+}
+
+#lunet pre[class*="language-"] {
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  border-radius: 0.85rem;
+}
+
+#lunet table {
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+#lunet :focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--pt-highlight) 70%, white);
+  outline-offset: 2px;
+}
+
+.lunet-home .container {
+  max-width: 1120px;
+}
+
+.pt-hero {
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  border-radius: 20px;
+  padding: clamp(1.5rem, 2vw, 2.1rem);
+  background-image:
+    linear-gradient(140deg, color-mix(in srgb, var(--pt-accent) 18%, transparent), transparent 46%),
+    radial-gradient(circle at bottom right, color-mix(in srgb, var(--pt-highlight) 14%, transparent), transparent 34%);
+  box-shadow: var(--pt-shadow-strong);
+}
+
+.pt-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pt-accent-strong);
+}
+
+.pt-hero .lead {
+  max-width: 72ch;
+}
+
+.pt-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.pt-hero-actions .btn-primary {
+  background: var(--pt-accent);
+  border-color: var(--pt-accent);
+}
+
+.pt-hero-actions .btn-primary:hover {
+  background: var(--pt-accent-strong);
+  border-color: var(--pt-accent-strong);
+}
+
+.pt-stat-grid,
+.pt-link-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.pt-stat-grid {
+  margin-top: 1.2rem;
+}
+
+.pt-link-grid {
+  margin-top: 0.7rem;
+}
+
+.pt-link-grid--wide {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.pt-stat-card,
+.pt-link-card {
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  border-radius: var(--pt-card-radius);
+  background: color-mix(in srgb, var(--bs-body-bg) 96%, var(--pt-accent-soft));
+  box-shadow: var(--pt-shadow-soft);
+}
+
+.pt-stat-card {
+  padding: 1rem 1.1rem;
+}
+
+.pt-link-card {
+  display: block;
+  padding: 1rem 1.1rem;
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.pt-link-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--pt-accent) 40%, var(--bs-border-color));
+  box-shadow: var(--pt-shadow-strong);
+}
+
+.pt-link-card-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.pt-link-card p,
+.pt-stat-card {
+  margin-bottom: 0;
+}
+
+.pt-stat-value {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--pt-accent-strong);
+}
+
+.pt-stat-label {
+  display: block;
+  margin-top: 0.3rem;
+  color: color-mix(in srgb, var(--bs-body-color) 78%, var(--pt-accent));
+}
+
+.pt-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.16rem 0.55rem;
+  margin-right: 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pt-success) 14%, transparent);
+  color: color-mix(in srgb, var(--pt-success) 84%, var(--bs-body-color));
+  font-weight: 700;
+}
+
+.api-dotnet-definition,
+.api-dotnet-members,
+.api-dotnet-member-filter {
+  border-radius: 0.9rem;
+}
+
+.api-dotnet-definition {
+  border: 1px solid color-mix(in srgb, var(--bs-border-color) 80%, transparent);
+  background: color-mix(in srgb, var(--bs-body-bg) 97%, var(--pt-accent-soft));
+  box-shadow: var(--pt-shadow-soft);
+}
+
+.api-dotnet-definition-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.api-dotnet-label,
+.api-dotnet-action {
+  font-weight: 700;
+}
+
+@media (max-width: 767px) {
+  .pt-hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pt-hero-actions .btn {
+    width: 100%;
+  }
+}
