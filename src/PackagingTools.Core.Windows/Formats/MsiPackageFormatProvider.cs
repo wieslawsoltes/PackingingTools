@@ -19,6 +19,8 @@ namespace PackagingTools.Core.Windows.Formats;
 /// </summary>
 public sealed class MsiPackageFormatProvider : IPackageFormatProvider
 {
+    private const string HarvestPayloadVariableName = "PayloadDir";
+
     private readonly IProcessRunner _processRunner;
     private readonly ISigningService _signingService;
     private readonly ITelemetryChannel _telemetry;
@@ -62,7 +64,7 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         var harvestedPath = Path.Combine(wixDir, "Harvested.wxs");
         var heatRequest = new ProcessExecutionRequest(
             FileName: "heat.exe",
-            Arguments: $"dir \"{payloadDir}\" -cg ProductComponents -dr INSTALLFOLDER -nologo -scom -sreg -srd -gg -out Harvested.wxs",
+            Arguments: $"dir \"{payloadDir}\" -cg ProductComponents -dr INSTALLFOLDER -var var.{HarvestPayloadVariableName} -nologo -scom -sreg -srd -gg -out Harvested.wxs",
             WorkingDirectory: wixDir);
         var heat = await _processRunner.ExecuteAsync(heatRequest, cancellationToken);
 
@@ -91,7 +93,7 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         var harvestedWixObj = Path.Combine(wixDir, "Harvested.wixobj");
         var harvestedCandleRequest = new ProcessExecutionRequest(
             FileName: "candle.exe",
-            Arguments: $"-nologo -o \"{harvestedWixObj}\" \"{harvestedPath}\"",
+            Arguments: $"-nologo -d{HarvestPayloadVariableName}=\"{payloadDir}\" -o \"{harvestedWixObj}\" \"{harvestedPath}\"",
             WorkingDirectory: wixDir);
         var harvestedCandle = await _processRunner.ExecuteAsync(harvestedCandleRequest, cancellationToken);
 

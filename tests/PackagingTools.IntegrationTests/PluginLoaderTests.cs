@@ -9,6 +9,7 @@ using Xunit;
 
 namespace PackagingTools.IntegrationTests;
 
+[Collection(PluginTestCollection.Name)]
 public sealed class PluginLoaderTests
 {
     [Fact]
