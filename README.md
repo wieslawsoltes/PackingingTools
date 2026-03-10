@@ -5,6 +5,7 @@ Cross-platform .NET 10 packaging stack for building, signing, validating, and pu
 [![.NET 10](https://img.shields.io/badge/.NET-10-512BD4)](https://dotnet.microsoft.com)
 [![Avalonia](https://img.shields.io/badge/Avalonia-11.x-8B44AC)](https://avaloniaui.net)
 [![CI](https://img.shields.io/github/actions/workflow/status/wieslawsoltes/PackingingTools/ci.yml?branch=main)](https://github.com/wieslawsoltes/PackingingTools/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-0F6CBD)](https://wieslawsoltes.github.io/PackingingTools/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/wieslawsoltes/PackingingTools/blob/main/LICENSE)
 
 ## NuGet Packages
@@ -137,6 +138,7 @@ See [docs/sdk/embedding-packagingtools.md](https://github.com/wieslawsoltes/Pack
 
 ## Documentation
 
+- [Published documentation site](https://wieslawsoltes.github.io/PackingingTools/)
 - [Solution architecture](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/architecture/solution-architecture.md)
 - [Windows packaging suite](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/windows-packaging-suite.md)
 - [Configuration guide](https://github.com/wieslawsoltes/PackingingTools/blob/main/docs/configuration/index.md)

@@ -1,0 +1,6 @@
+adr:
+  - {path: readme.md, title: "Architecture Decision Records"}
+  - {path: 0001-windows-toolchain-selection.md, title: "0001 Windows Toolchain Selection"}
+  - {path: 0002-windows-process-execution-abstraction.md, title: "0002 Windows Process Execution Abstraction"}
+  - {path: 0003-macos-toolchain-selection.md, title: "0003 macOS Toolchain Selection"}
+  - {path: 0004-linux-toolchain-selection.md, title: "0004 Linux Toolchain Selection"}

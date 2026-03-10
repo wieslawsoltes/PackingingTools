@@ -1,0 +1,8 @@
+reference:
+  - {path: readme.md, title: "Reference"}
+  - {path: package-map.md, title: "Package Map"}
+  - {path: repository-layout.md, title: "Repository Layout"}
+  - {path: packaging-roadmap.md, title: "Packaging Roadmap"}
+  - {path: milestone-discovery.md, title: "Milestone Discovery"}
+  - {path: pre-mvp-tasks.md, title: "Pre-MVP Tasks"}
+  - {path: adr/readme.md, title: "Architecture Decision Records", folder: true}
