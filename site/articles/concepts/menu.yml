@@ -1,0 +1,6 @@
+concepts:
+  - {path: readme.md, title: "Concepts"}
+  - {path: solution-architecture.md, title: "Solution Architecture"}
+  - {path: identity-architecture.md, title: "Identity Architecture"}
+  - {path: policy-engine.md, title: "Policy Engine"}
+  - {path: security-and-sbom.md, title: "Security and SBOM"}

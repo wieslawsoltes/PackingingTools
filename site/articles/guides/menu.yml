@@ -1,0 +1,10 @@
+guides:
+  - {path: readme.md, title: "Guides"}
+  - {path: windows-packaging.md, title: "Windows Packaging"}
+  - {path: windows-host-validation.md, title: "Windows Host Validation"}
+  - {path: macos-packaging.md, title: "macOS Packaging"}
+  - {path: linux-repository-publishing.md, title: "Linux Repository Publishing"}
+  - {path: linux-container-builds.md, title: "Linux Container Builds"}
+  - {path: linux-security-artifacts.md, title: "Linux Security Artifacts"}
+  - {path: plugins.md, title: "Plugin Configuration"}
+  - {path: sdk-embedding.md, title: "SDK Embedding"}

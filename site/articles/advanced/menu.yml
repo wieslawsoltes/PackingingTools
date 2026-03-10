@@ -1,0 +1,4 @@
+advanced:
+  - {path: readme.md, title: "Advanced"}
+  - {path: ci-and-release-automation.md, title: "CI and Release Automation"}
+  - {path: starter-workflows.md, title: "Starter Workflows"}
