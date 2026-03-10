@@ -173,8 +173,16 @@ public sealed class PipelineIntegrationTests : IDisposable
 
         Assert.Contains(processRunner.Requests, r => r.FileName.EndsWith("makeappx.exe", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(processRunner.Requests, r => r.FileName.EndsWith("heat.exe", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(processRunner.Requests, r => r.FileName.EndsWith("candle.exe", StringComparison.OrdinalIgnoreCase));
-        Assert.Contains(processRunner.Requests, r => r.FileName.EndsWith("light.exe", StringComparison.OrdinalIgnoreCase));
+        var candleRequests = processRunner.Requests
+            .Where(r => r.FileName.EndsWith("candle.exe", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        Assert.Equal(2, candleRequests.Count);
+        Assert.Contains(candleRequests, r => r.Arguments.Contains("Product.wxs", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(candleRequests, r => r.Arguments.Contains("Harvested.wxs", StringComparison.OrdinalIgnoreCase));
+
+        var lightRequest = Assert.Single(processRunner.Requests, r => r.FileName.EndsWith("light.exe", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains("Product.wixobj", lightRequest.Arguments, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Harvested.wixobj", lightRequest.Arguments, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

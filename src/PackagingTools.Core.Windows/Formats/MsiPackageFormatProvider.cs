@@ -75,16 +75,29 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
         var sourcePath = Path.Combine(wixDir, "Product.wxs");
         await WriteWixSourceAsync(context, sourcePath, shortcut, protocol, shellExtension, cancellationToken);
 
-        var wixObj = Path.Combine(wixDir, "Product.wixobj");
-        var candleRequest = new ProcessExecutionRequest(
+        var productWixObj = Path.Combine(wixDir, "Product.wixobj");
+        var productCandleRequest = new ProcessExecutionRequest(
             FileName: "candle.exe",
-            Arguments: $"-nologo -o \"{wixObj}\" \"{sourcePath}\" \"{harvestedPath}\"",
+            Arguments: $"-nologo -o \"{productWixObj}\" \"{sourcePath}\"",
             WorkingDirectory: wixDir);
-        var candle = await _processRunner.ExecuteAsync(candleRequest, cancellationToken);
+        var productCandle = await _processRunner.ExecuteAsync(productCandleRequest, cancellationToken);
 
-        if (!candle.IsSuccess)
+        if (!productCandle.IsSuccess)
         {
-            RecordToolFailure(context, issues, "windows.msi.candle_failed", candleRequest, candle);
+            RecordToolFailure(context, issues, "windows.msi.candle_failed", productCandleRequest, productCandle);
+            return new PackageFormatResult(Array.Empty<PackagingArtifact>(), issues);
+        }
+
+        var harvestedWixObj = Path.Combine(wixDir, "Harvested.wixobj");
+        var harvestedCandleRequest = new ProcessExecutionRequest(
+            FileName: "candle.exe",
+            Arguments: $"-nologo -o \"{harvestedWixObj}\" \"{harvestedPath}\"",
+            WorkingDirectory: wixDir);
+        var harvestedCandle = await _processRunner.ExecuteAsync(harvestedCandleRequest, cancellationToken);
+
+        if (!harvestedCandle.IsSuccess)
+        {
+            RecordToolFailure(context, issues, "windows.msi.candle_failed", harvestedCandleRequest, harvestedCandle);
             return new PackageFormatResult(Array.Empty<PackagingArtifact>(), issues);
         }
 
@@ -93,7 +106,7 @@ public sealed class MsiPackageFormatProvider : IPackageFormatProvider
 
         var lightRequest = new ProcessExecutionRequest(
             FileName: "light.exe",
-            Arguments: $"-nologo -spdb -o \"{outputPath}\" \"{wixObj}\"",
+            Arguments: $"-nologo -spdb -o \"{outputPath}\" \"{productWixObj}\" \"{harvestedWixObj}\"",
             WorkingDirectory: wixDir);
         var light = await _processRunner.ExecuteAsync(lightRequest, cancellationToken);
 
