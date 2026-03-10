@@ -302,9 +302,7 @@ public sealed class PipelineIntegrationTests : IDisposable
             outputDir,
             new Dictionary<string, string>
             {
-                ["windows.msi.sourceDirectory"] = payloadDir,
-                ["windows.msi.shortcutName"] = "Sample Windows App Smoke",
-                ["windows.msi.shortcutTarget"] = "Sample.exe"
+                ["windows.msi.sourceDirectory"] = payloadDir
             });
 
         var processRunner = new ProcessRunner();
