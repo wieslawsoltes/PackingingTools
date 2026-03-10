@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>Solution Architecture Overview | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="Solution Architecture Overview | PackagingTools">
+<meta name="twitter:description" content="Solution Architecture Overview 1. Solution Layout &amp; Modules PackagingTools/ ├── src/ │ ├── PackagingTools.App/ # Avalonia GUI │ ├── PackagingTools.Cli/ # Command-line interface │ ├── PackagingTools.Core/ # Shared orchestration &amp; services │ └── PackagingTools.Plugins/ # Extension packages ├── build/ # Bootstrap &amp; infrastructure scripts ├── tools/ # Auxiliary utilities &amp; diagnostics ├── tests/ # Automated test suites ├── samples/ # Demonstration projects &amp; recipes └── docs/ # Documentation, ADRs, compliance...">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="Solution Architecture Overview | PackagingTools">
+<meta property="og:title" content="Solution Architecture Overview | PackagingTools">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Solution Architecture Overview 1. Solution Layout &amp; Modules PackagingTools/ ├── src/ │ ├── PackagingTools.App/ # Avalonia GUI │ ├── PackagingTools.Cli/ # Command-line interface │ ├── PackagingTools.Core/ # Shared orchestration &amp; services │ └── PackagingTools.Plugins/ # Extension packages ├── build/ # Bootstrap &amp; infrastructure scripts ├── tools/ # Auxiliary utilities &amp; diagnostics ├── tests/ # Automated test suites ├── samples/ # Demonstration projects &amp; recipes └── docs/ # Documentation, ADRs, compliance...">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="Solution Architecture Overview | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md sticky-top">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-articles">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container-xxl">
+  <div class="row">
+      <!-- Left sidebar - responsive offcanvas (offcanvas on mobile, visible sidebar on md+) -->
+      <nav id="docs-sidebar-menu" class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 offcanvas-md offcanvas-start sticky-md-top menu-sidebar align-self-start order-1 order-md-0" tabindex="-1" aria-labelledby="docs-sidebar-menu-label" aria-expanded="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docs-sidebar-menu-label">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#docs-sidebar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ol id='menu-id-concepts-0' class='menu menu-level0 show '>
+            <li id='menu-item-concepts-1' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/' class='menu-link  '>Concepts</a></span>  </li>
+            <li id='menu-item-concepts-2' class='menu-item  active'>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/solution-architecture/' class='menu-link  '>Solution Architecture</a></span>  </li>
+            <li id='menu-item-concepts-3' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/identity-architecture/' class='menu-link  '>Identity Architecture</a></span>  </li>
+            <li id='menu-item-concepts-4' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/policy-engine/' class='menu-link  '>Policy Engine</a></span>  </li>
+            <li id='menu-item-concepts-5' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/security-and-sbom/' class='menu-link  '>Security and SBOM</a></span>  </li>
+          </ol>
+
+        </div>
+      </nav>
+      <!-- Right sidebar (TOC) - collapsible on mobile, visible sidebar on xxl+ -->
+      <aside id="docs-sidebar-toc" class="col-12 col-xxl-2 sticky-xxl-top menu-sidebar align-self-start order-0 order-xxl-2 collapse d-xxl-block" aria-expanded="true">
+        <h3 class="toc-title">On this page</h3>
+        <nav class="js-toc"></nav>
+      </aside>
+      <!-- Main content column -->
+      <div class="col-12 col-md-9 col-lg-9 col-xl-9 col-xxl-8 order-2 order-md-1 js-toc-content">
+        <ol class='breadcrumb'>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/' class='breadcrumb-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/' class='breadcrumb-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/concepts/' class='breadcrumb-link  '>Concepts</a>  </li>
+          <li class='breadcrumb-item  active'>
+            Solution Architecture  </li>
+        </ol>
+
+        <p id="lunet-results"></p>
+        <!-- Toggle buttons visible only on small screens -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#docs-sidebar-menu"
+            aria-controls="docs-sidebar-menu"
+            aria-label="Toggle docs menu">
+            Menu
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm d-xxl-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#docs-sidebar-toc"
+            aria-controls="docs-sidebar-toc"
+            aria-expanded="false"
+            aria-label="Toggle Table Of Contents">
+            On this page
+          </button>
+        </div>
+<!-- lunet:summarize -->
+<h1 id="solution-architecture-overview">Solution Architecture Overview</h1>
+<h2 id="1-solution-layout--modules">1. Solution Layout &amp; Modules</h2>
+<pre><code>PackagingTools/
+├── src/
+│   ├── PackagingTools.App/        # Avalonia GUI
+│   ├── PackagingTools.Cli/        # Command-line interface
+│   ├── PackagingTools.Core/       # Shared orchestration &amp; services
+│   └── PackagingTools.Plugins/    # Extension packages
+├── build/                         # Bootstrap &amp; infrastructure scripts
+├── tools/                         # Auxiliary utilities &amp; diagnostics
+├── tests/                         # Automated test suites
+├── samples/                       # Demonstration projects &amp; recipes
+└── docs/                          # Documentation, ADRs, compliance evidence
+</code></pre>
+<ul>
+<li>Projects will target <code>.NET 10</code> as baseline to align with modern SDK distribution, while remaining compatible with <code>.NET 8/9</code> for CLI scenarios where required.</li>
+<li><code>PackagingTools.Core</code> exposes interfaces (<code>IPackagingPipeline</code>, <code>ISigningService</code>, <code>IPolicyEvaluator</code>) consumed by GUI/CLI and extension points.</li>
+<li><code>PackagingTools.Plugins</code> compiles independent assemblies that register with the core via MEF-like or DI-based discovery.</li>
+</ul>
+<h2 id="2-architectural-layers">2. Architectural Layers</h2>
+<table class="table">
+<thead>
+<tr>
+<th>Layer</th>
+<th>Responsibilities</th>
+<th>Key Technologies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Presentation</td>
+<td>Avalonia desktop UI, CLI command handlers, REST/gRPC endpoints.</td>
+<td>Avalonia UI, System.CommandLine, ASP.NET Core minimal services.</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Orchestration, workflow state machines, policy enforcement.</td>
+<td><code>PackagingTools.Core</code>, MediatR-style pipelines, FluentValidation.</td>
+</tr>
+<tr>
+<td>Domain</td>
+<td>Packaging abstractions, project schema, signing &amp; telemetry contracts.</td>
+<td>C# records, JSON schema, gRPC DTOs.</td>
+</tr>
+<tr>
+<td>Infrastructure</td>
+<td>OS-specific packagers, signing adapters, storage providers, telemetry emitters.</td>
+<td>MSIX SDK, WiX, <code>codesign</code>, <code>productbuild</code>, Flatpak CLI, Azure Key Vault SDK, SQLite/EF Core, OpenTelemetry.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="3-packaging-engine-abstractions">3. Packaging Engine Abstractions</h2>
+<ul>
+<li><strong>IPackagingProjectStore</strong>: CRUD for project definitions, supports multi-tenant namespaces and version history.</li>
+<li><strong>IPackagingPipeline</strong>: Executes build → sign → verify → publish phases; pipelines are composed from reusable steps.</li>
+<li><strong>IPackageFormatProvider</strong>: Format-specific implementation (e.g., MSIXProvider, DmgProvider) loaded via dependency injection.</li>
+<li><strong>ISigningService</strong>: Abstracts local certificate stores, remote HSMs, and cloud KMS providers.</li>
+<li><strong>IPolicyEvaluator</strong>: Evaluates compliance rules (signing required, reviewer approvals, retention) before pipeline execution.</li>
+<li><strong>ITelemetryChannel</strong>: Emits structured events with privacy-aware filtering.</li>
+</ul>
+<h3 id="sequence-packaging-run-textual">Sequence: Packaging Run (Textual)</h3>
+<ol>
+<li>User/automation triggers <code>StartPackagingAsync(projectId, targetEnvironment)</code>.</li>
+<li><code>PackagingCoordinator</code> loads project configuration from <code>IPackagingProjectStore</code>.</li>
+<li><code>IPolicyEvaluator</code> validates prerequisites (approvals, signing assets, policy checks).</li>
+<li>Required build environments are resolved via <code>IBuildAgentBroker</code> (local or remote).</li>
+<li><code>IPackagingPipeline</code> orchestrates format providers; each step logs progress via <code>ITelemetryChannel</code>.</li>
+<li><code>ISigningService</code> signs binaries/installers; receipts stored in <code>AuditRepository</code>.</li>
+<li>Verification step ensures artifacts meet policy checks (hash, notarization, repo metadata).</li>
+<li>Artifacts published to configured destinations; summary persisted for dashboards and CLI output.</li>
+</ol>
+<h2 id="4-install--configuration-services">4. Install &amp; Configuration Services</h2>
+<ul>
+<li><strong>Distribution Strategy:</strong> Ship the CLI as a .NET global tool (<code>PackagingTools.Cli</code>) with OS-specific re-packaging for environments below SDK 10, mirroring current accelerate flow. GUI binaries distributed via native installers generated by PackagingTools itself.</li>
+<li><strong>Initial Configuration Flow:</strong>
+<ol>
+<li>First-run wizard validates prerequisites (SDK, platform toolchains) and offers to bootstrap missing dependencies.</li>
+<li>Users optionally connect to remote services (signing agents, artifact stores) through secure secret entry backed by OS keychains.</li>
+<li>CLI honors the same configuration files and environment variables, enabling unattended automation without additional gating.</li>
+</ol>
+</li>
+<li><strong>Offline Support:</strong> Provide export/import of dependency caches and configuration bundles so environments without internet access can run packaging pipelines.</li>
+<li><strong>Updates:</strong> Build scripts under <code>build/</code> provide commands to check for updates, pre-download toolchains, and roll back if validation fails.</li>
+</ul>
+<h2 id="5-configuration--persistence">5. Configuration &amp; Persistence</h2>
+<ul>
+<li><strong>Project Schema:</strong> JSON files stored alongside projects with strongly typed models (System.Text.Json) and JSON Schema documents for validation.</li>
+<li><strong>Central Store:</strong> SQLite (via EF Core) used for metadata such as build history, audit logs, and policy assignments. Optional switch to PostgreSQL for multi-user server deployments.</li>
+<li><strong>Secrets:</strong> Abstracted <code>ISecretProvider</code> chooses best backend per OS (Windows Credential Manager, macOS Keychain, Linux libsecret); enterprise mode supports Azure Key Vault/HashiCorp Vault connectors.</li>
+<li><strong>Caching:</strong> <code>build/</code> scripts manage cached packaging toolchains; metadata stored in SQLite table with checksum to ensure integrity.</li>
+</ul>
+<h2 id="6-diagrams-mermaid">6. Diagrams (Mermaid)</h2>
+<pre class="mermaid">flowchart LR
+    A[Trigger: GUI/CLI/API] --> B[PackagingCoordinator]
+    B --> C[PolicyEvaluator]
+    C -->|Approved| D[BuildAgentBroker]
+    D --> E[PackagingPipeline]
+    E --> F[SigningService]
+    F --> G[Verification]
+    G --> H[Publishers]
+    H --> I[Telemetry/Audit Store]
+</pre>
+<pre class="mermaid">sequenceDiagram
+    participant U as User/Automation
+    participant GUI as GUI/CLI
+    participant Coord as PackagingCoordinator
+    participant Policy as PolicyEvaluator
+    participant Agent as BuildAgentBroker
+    participant Pipe as PackagingPipeline
+    participant Sign as SigningService
+    participant Repo as AuditRepository
+
+    U->>GUI: Start packaging request
+    GUI->>Coord: StartPackaging(projectId)
+    Coord->>Policy: Validate(projectId)
+    Policy-->>Coord: PolicyResult
+    Coord->>Agent: Allocate(agentSpec)
+    Agent-->>Coord: BuilderHandle
+    Coord->>Pipe: Execute(handle, project)
+    Pipe->>Sign: Sign(artifacts)
+    Sign-->>Pipe: SigningResult
+    Pipe->>Repo: RecordAudit(entries)
+    Repo-->>Pipe: Ack
+    Pipe-->>Coord: PipelineResult
+    Coord-->>GUI: PackagingSummary
+    GUI-->>U: Report status/artifacts
+</pre>
+<h2 id="7-remote-build--agent-strategy">7. Remote Build &amp; Agent Strategy</h2>
+<ul>
+<li><code>IBuildAgentBroker</code> manages pools of agents per OS, supporting:
+<ul>
+<li>Local execution (default).</li>
+<li>Self-hosted agents registered via mutual TLS.</li>
+<li>Managed cloud agents (future enterprise add-on).</li>
+</ul>
+</li>
+<li>Agents authenticate using short-lived tokens issued by <code>AgentProvisioningService</code>.</li>
+<li>Artifacts transferred via secure channels (SFTP, HTTPS) with checksum validation.</li>
+</ul>
+<h2 id="8-policy--governance-engine">8. Policy &amp; Governance Engine</h2>
+<ul>
+<li>Policies defined as declarative rules stored in JSON/YAML, evaluated using expression language (e.g., Rego or custom DSL).</li>
+<li>Enforcement points:
+<ul>
+<li>Pre-flight checks (signing assets, approvals, environment readiness).</li>
+<li>Post-build validation (SBOM presence, vulnerability scan results).</li>
+</ul>
+</li>
+<li>Audit trail persisted with immutable event log (append-only table) and exportable to CSV/JSON for compliance.</li>
+</ul>
+<h2 id="9-telemetry--observability">9. Telemetry &amp; Observability</h2>
+<ul>
+<li>OpenTelemetry for metrics and traces; Application Insights exporters provided out-of-box.</li>
+<li>Privacy controls ensure PII-free logs, with organization-level toggles configured in GUI/CLI.</li>
+<li>Diagnostics bundles packaged for support, capturing logs, telemetry snapshots, agent health, and environment metadata.</li>
+</ul>
+<h2 id="10-review--next-steps">10. Review &amp; Next Steps</h2>
+<ul>
+<li>Architecture decision records (ADRs) are tracked in the <a href="/PackingingTools/articles/reference/adr">reference ADR section</a> for major decisions such as runtime targeting, persistence, plugin design, and configuration strategy.</li>
+<li>Schedule stakeholder review covering:
+<ul>
+<li>Solution layout &amp; interfaces.</li>
+<li>Configuration assumptions.</li>
+<li>Infrastructure requirements (agents, storage, telemetry).</li>
+</ul>
+</li>
+<li>Capture feedback and update this document alongside ADRs before moving to Milestone 3 implementation workstreams.</li>
+</ul>
+
+      </div>
+  </div>
+</div>
+
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>

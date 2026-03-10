@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>Milestone 1 — Discovery & Requirements Alignment | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="Milestone 1 — Discovery & Requirements Alignment | PackagingTools">
+<meta name="twitter:description" content="Milestone 1 — Discovery &amp; Requirements Alignment Task 1. Platform Scenario Catalogue Windows Primary packages: MSIX, MSIX App Attach, MSI/EXE (WiX), App Installer feeds, portable EXE for side-loading. Distribution targets: Microsoft Store, enterprise Endpoint Manager/Intune, WinGet community/private repos, offline media. Key workflows: Continuous packaging from CI, delta updates, desktop bridge migrations, legacy Win32 wrapping. Compliance checkpoints: EV code signing, timestamping (RFC 3161), Device Guard policies, SmartScreen reputation, accessibility statements, export...">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="Milestone 1 — Discovery & Requirements Alignment | PackagingTools">
+<meta property="og:title" content="Milestone 1 — Discovery & Requirements Alignment | PackagingTools">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Milestone 1 — Discovery &amp; Requirements Alignment Task 1. Platform Scenario Catalogue Windows Primary packages: MSIX, MSIX App Attach, MSI/EXE (WiX), App Installer feeds, portable EXE for side-loading. Distribution targets: Microsoft Store, enterprise Endpoint Manager/Intune, WinGet community/private repos, offline media. Key workflows: Continuous packaging from CI, delta updates, desktop bridge migrations, legacy Win32 wrapping. Compliance checkpoints: EV code signing, timestamping (RFC 3161), Device Guard policies, SmartScreen reputation, accessibility statements, export...">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="Milestone 1 — Discovery & Requirements Alignment | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md sticky-top">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-articles">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container-xxl">
+  <div class="row">
+      <!-- Left sidebar - responsive offcanvas (offcanvas on mobile, visible sidebar on md+) -->
+      <nav id="docs-sidebar-menu" class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 offcanvas-md offcanvas-start sticky-md-top menu-sidebar align-self-start order-1 order-md-0" tabindex="-1" aria-labelledby="docs-sidebar-menu-label" aria-expanded="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docs-sidebar-menu-label">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#docs-sidebar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <div class='lunet-menu-async' data-lunet-menu-partial='/PackingingTools/partials/menus/menu-reference.46c375e23ee635623240091864a3167d.html' data-lunet-menu-open='menu-id-reference-0' data-lunet-menu-active='menu-item-reference-5,menu-item-reference-0'><div class='menu-loading text-body-secondary small'>Loading menu…</div></div>
+        </div>
+      </nav>
+      <!-- Right sidebar (TOC) - collapsible on mobile, visible sidebar on xxl+ -->
+      <aside id="docs-sidebar-toc" class="col-12 col-xxl-2 sticky-xxl-top menu-sidebar align-self-start order-0 order-xxl-2 collapse d-xxl-block" aria-expanded="true">
+        <h3 class="toc-title">On this page</h3>
+        <nav class="js-toc"></nav>
+      </aside>
+      <!-- Main content column -->
+      <div class="col-12 col-md-9 col-lg-9 col-xl-9 col-xxl-8 order-2 order-md-1 js-toc-content">
+        <ol class='breadcrumb'>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/' class='breadcrumb-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/' class='breadcrumb-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/reference/' class='breadcrumb-link  '>Reference</a>  </li>
+          <li class='breadcrumb-item  active'>
+            Milestone Discovery  </li>
+        </ol>
+
+        <p id="lunet-results"></p>
+        <!-- Toggle buttons visible only on small screens -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#docs-sidebar-menu"
+            aria-controls="docs-sidebar-menu"
+            aria-label="Toggle docs menu">
+            Menu
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm d-xxl-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#docs-sidebar-toc"
+            aria-controls="docs-sidebar-toc"
+            aria-expanded="false"
+            aria-label="Toggle Table Of Contents">
+            On this page
+          </button>
+        </div>
+<!-- lunet:summarize -->
+<h1 id="milestone-1--discovery--requirements-alignment">Milestone 1 — Discovery &amp; Requirements Alignment</h1>
+<h2 id="task-1-platform-scenario-catalogue">Task 1. Platform Scenario Catalogue</h2>
+<h3 id="windows">Windows</h3>
+<ul>
+<li><strong>Primary packages:</strong> MSIX, MSIX App Attach, MSI/EXE (WiX), App Installer feeds, portable EXE for side-loading.</li>
+<li><strong>Distribution targets:</strong> Microsoft Store, enterprise Endpoint Manager/Intune, WinGet community/private repos, offline media.</li>
+<li><strong>Key workflows:</strong> Continuous packaging from CI, delta updates, desktop bridge migrations, legacy Win32 wrapping.</li>
+<li><strong>Compliance checkpoints:</strong> EV code signing, timestamping (RFC 3161), Device Guard policies, SmartScreen reputation, accessibility statements, export controls for crypto.</li>
+</ul>
+<h3 id="macos">macOS</h3>
+<ul>
+<li><strong>Primary packages:</strong> Notarized <code>.app</code> bundles, <code>.pkg</code> installers, <code>.dmg</code> images, Sparkle/Microsoft AutoUpdate feeds.</li>
+<li><strong>Distribution targets:</strong> Mac App Store, direct download with notarization, enterprise MDM deployment, TestFlight equivalents via private feeds.</li>
+<li><strong>Key workflows:</strong> Cross-host signing from non-macOS, entitlements management, universal binary handling, auto-update channels.</li>
+<li><strong>Compliance checkpoints:</strong> Apple Developer ID program, notarization ticket stapling, Gatekeeper verification, privacy usage descriptions, export compliance declarations.</li>
+</ul>
+<h3 id="linux">Linux</h3>
+<ul>
+<li><strong>Primary packages:</strong> DEB, RPM, AppImage, Flatpak, Snap, OCI-based images.</li>
+<li><strong>Distribution targets:</strong> Native distro repositories, private APT/YUM repos, Snap Store, Flathub, enterprise artifact caches, container registries.</li>
+<li><strong>Key workflows:</strong> Dependency discovery, post-install hooks, sandbox permissions, multi-distro testing, reproducible builds.</li>
+<li><strong>Compliance checkpoints:</strong> GPG signing for repos, SBOM publication, FIPS-aligned crypto libraries, sandbox confinement profiles, supply-chain attestation (in-toto/SLSA).</li>
+</ul>
+<h3 id="cross-cutting-scenarios">Cross-Cutting Scenarios</h3>
+<ul>
+<li>Unified project definition shared across GUI and automation.</li>
+<li>Remote signing services for hardware-backed certs.</li>
+<li>Offline/air-gapped packaging with pre-fetched toolchains.</li>
+<li>Telemetry opt-in for health metrics while preserving compliance boundaries (GDPR/CCPA).</li>
+</ul>
+<h2 id="task-2-existing-tool-user-journey-mapping">Task 2. Existing Tool User Journey Mapping</h2>
+<h3 id="1-onboard--install">1. Onboard &amp; Install</h3>
+<ol>
+<li>Install .NET SDK (6.0+, ideal 10+).</li>
+<li>Install global tool via <code>dotnet tool install --global</code> (platform-specific packages for SDK &lt; 10).</li>
+<li>Launch GUI via the PackagingTools desktop app or run the <code>packagingtools</code> command to start the CLI once the tool is installed.</li>
+<li>Configure optional telemetry settings or plugin dependencies as needed.</li>
+</ol>
+<h3 id="2-project-authoring-in-gui">2. Project Authoring in GUI</h3>
+<ol>
+<li>Create or open a PackagingTools project JSON file.</li>
+<li>Configure app metadata, target runtimes, package formats, signing credentials.</li>
+<li>Save project for reuse across GUI and CLI workflows.</li>
+</ol>
+<h3 id="3-cli-automation">3. CLI Automation</h3>
+<ol>
+<li>Execute <code>packagingtools pack &lt;project&gt; -r &lt;RID&gt; -p &lt;format&gt; -o &lt;outDir&gt;</code>.</li>
+<li>Tool bundles, signs, and packages according to project configuration.</li>
+<li>Outputs installers and logs to artifacts directory for downstream release processes.</li>
+</ol>
+<h3 id="4-maintenance--updates">4. Maintenance &amp; Updates</h3>
+<ol>
+<li>Update tool via <code>dotnet tool update</code> or platform-specific packages.</li>
+<li>Monitor community releases for updates using <code>dotnet tool update</code> automation.</li>
+<li>Troubleshoot via logs inside project folders; limited built-in telemetry/alerting.</li>
+</ol>
+<p><strong>Friction Points Identified</strong></p>
+<ul>
+<li>Manual prerequisite verification (dotnet SDK, OS tooling) prior to install.</li>
+<li>Lack of guided setup for automation prerequisites and integration with existing build pipelines.</li>
+<li>Minimal policy enforcement or compliance visibility within project schema.</li>
+<li>Sparse observability: no built-in telemetry dashboards or diagnostics bundling.</li>
+</ul>
+<h2 id="task-3-stakeholder-needs-summary">Task 3. Stakeholder Needs Summary</h2>
+<table class="table">
+<thead>
+<tr>
+<th>Persona</th>
+<th>Goals</th>
+<th>Pain Points Today</th>
+<th>Priority Needs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Application Developer</td>
+<td>Package multi-platform release builds quickly.</td>
+<td>Toolchain setup per OS, manual signing steps, limited automation documentation.</td>
+<td>Guided setup, repeatable recipes, integration with build scripts.</td>
+</tr>
+<tr>
+<td>Release/DevOps Engineer</td>
+<td>Automate pipelines with auditability.</td>
+<td>CLI feature gaps, limited API surface, scattered secrets handling.</td>
+<td>Programmatic APIs/CLI with RBAC, policy enforcement, secret vault integration.</td>
+</tr>
+<tr>
+<td>IT Administrator/Security</td>
+<td>Ensure compliance and fleet governance.</td>
+<td>Little visibility into signing/audit data, no role separation, manual evidence collection.</td>
+<td>Central policy engine, audit logging, compliance exports, SSO integration.</td>
+</tr>
+<tr>
+<td>Support/Customer Success</td>
+<td>Maintain SLAs and troubleshoot packages.</td>
+<td>Limited telemetry, fragmented logs, no proactive health metrics.</td>
+<td>Unified diagnostics exports, telemetry pipeline, knowledge base integration.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="task-4-avalonia-reuse-assessment">Task 4. Avalonia Reuse Assessment</h2>
+<table class="table">
+<thead>
+<tr>
+<th>Area</th>
+<th>Candidate Sources</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Desktop UI Shell</td>
+<td><code>../Avalonia/src/Avalonia.Controls</code>, <code>../Avalonia/src/Avalonia.Themes.Fluent</code></td>
+<td>Provides windowing, navigation, docking patterns aligned with Fluent design.</td>
+</tr>
+<tr>
+<td>Data Visualization &amp; Controls</td>
+<td><code>../Avalonia/samples/ControlCatalog</code>, <code>../Avalonia/src/Avalonia.Controls.DataGrid</code></td>
+<td>Offers templates for dashboards, configuration grids, and diff views.</td>
+</tr>
+<tr>
+<td>Functional UI Composition</td>
+<td><code>../Avalonia/src/Avalonia.FuncUI</code></td>
+<td>Enables declarative composition for wizard flows and dynamic validation.</td>
+</tr>
+<tr>
+<td>Cross-Platform Services</td>
+<td><code>../Avalonia/src/Shared</code>, <code>../Avalonia/src/Avalonia.Platform</code></td>
+<td>Reusable abstractions for storage, platform detection, threading.</td>
+</tr>
+<tr>
+<td>Diagnostics &amp; Tooling</td>
+<td><code>../Avalonia/src/Avalonia.Diagnostics</code>, <code>../Avalonia/src/Avalonia.Desktop</code></td>
+<td>Potential for embedded inspector, logging viewers, and window management.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Reuse Opportunities</strong></p>
+<ul>
+<li>Adopt Fluent theme tokens for consistent branding.</li>
+<li>Leverage ControlCatalog examples as UX starting point for configuration editors and dashboards.</li>
+<li>Utilize <code>Avalonia.FuncUI</code> for testable wizard flows with strong typing.</li>
+</ul>
+<h2 id="task-5-regulatory--compliance-landscape">Task 5. Regulatory &amp; Compliance Landscape</h2>
+<table class="table">
+<thead>
+<tr>
+<th>Domain</th>
+<th>Windows</th>
+<th>macOS</th>
+<th>Linux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Code Signing</td>
+<td>EV/OV certificates, SmartScreen reputation, timestamping.</td>
+<td>Developer ID certs, Apple notarization, ticket stapling.</td>
+<td>GPG signatures for packages and repos; optional S/MIME for AppImage/AppStream metadata.</td>
+</tr>
+<tr>
+<td>Store Submission</td>
+<td>Microsoft Store certification, MSIX requirements.</td>
+<td>App Store review guidelines, sandbox entitlements.</td>
+<td>Snap Store/Flathub review policies; distro-specific QA.</td>
+</tr>
+<tr>
+<td>Security Standards</td>
+<td>Device Guard, Defender SmartScreen, optional FIPS.</td>
+<td>Gatekeeper, TCC privacy prompts, hardened runtime.</td>
+<td>SELinux/AppArmor policies, sandbox manifest requirements, supply-chain attestations.</td>
+</tr>
+<tr>
+<td>Data Protection</td>
+<td>GDPR/CCPA compliance in telemetry, crash reporting, credential storage.</td>
+<td>Same as Windows; additional Apple privacy labeling.</td>
+<td>Same as Windows; OSS licensing disclosures for bundled deps.</td>
+</tr>
+<tr>
+<td>Accessibility</td>
+<td>WCAG 2.2, Section 508 VPAT for packaging UI.</td>
+<td>WCAG 2.2, EN 301 549.</td>
+<td>WCAG 2.2 where mandated, plus distro-specific accessibility guidelines.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="task-6-requirements-specification-version-01">Task 6. Requirements Specification (Version 0.1)</h2>
+<h3 id="functional-requirements">Functional Requirements</h3>
+<ul>
+<li><strong>F1.</strong> Provide GUI wizard to define multi-platform packaging projects with shared metadata and per-OS overrides.</li>
+<li><strong>F2.</strong> Support remote and local signing flows with policy enforcement and secure secret storage.</li>
+<li><strong>F3.</strong> Offer automation interfaces (CLI, SDK, APIs) fully feature-equivalent with GUI to support scripting and CI/CD workflows.</li>
+<li><strong>F4.</strong> Enable cross-host packaging scenarios, including remote build agent orchestration and offline-ready tool caches.</li>
+<li><strong>F5.</strong> Deliver compliance and audit outputs (logs, SBOMs, notarization receipts, manifest summaries) per build.</li>
+<li><strong>F6.</strong> Integrate telemetry and diagnostics exports configurable by organization policy.</li>
+</ul>
+<h3 id="non-functional-requirements">Non-Functional Requirements</h3>
+<ul>
+<li><strong>N1.</strong> Cross-platform availability on Windows 10+, macOS 13+, Linux (glibc 2.27+/musl 1.22.2+) with consistent UX.</li>
+<li><strong>N2.</strong> End-to-end packaging pipeline completes ≤15 minutes at 95th percentile for representative workloads.</li>
+<li><strong>N3.</strong> Sensitive data (certificates, secrets) stored encrypted at rest using platform keystores or managed vaults.</li>
+<li><strong>N4.</strong> Provide localization hooks and accessible UI meeting WCAG 2.2 AA.</li>
+<li><strong>N5.</strong> Achieve 99% automated policy compliance enforcement coverage with audit trail.</li>
+</ul>
+<h3 id="community--support-requirements">Community &amp; Support Requirements</h3>
+<ul>
+<li><strong>C1.</strong> Provide clear contribution guidelines, governance model, and code of conduct for the OSS community.</li>
+<li><strong>C2.</strong> Maintain active community support channels (forum, chat, issue tracker) with documented triage expectations.</li>
+<li><strong>C3.</strong> Define optional commercial engagement points (e.g., consulting, long-term support) without restricting OSS access.</li>
+</ul>
+<h3 id="documentation--enablement">Documentation &amp; Enablement</h3>
+<ul>
+<li><strong>D1.</strong> Publish onboarding guides mirroring current global-tool steps plus enhanced environment checks.</li>
+<li><strong>D2.</strong> Provide migration documentation for existing accelerate projects, including import tooling.</li>
+<li><strong>D3.</strong> Maintain knowledge base and troubleshooting playbooks tailored to different adopter personas (individuals, teams, enterprises).</li>
+</ul>
+<h3 id="open-questions">Open Questions</h3>
+<ol>
+<li>Scope of offline/air-gapped environment support, including bootstrap of dependencies and signing assets distribution.</li>
+<li>Preferred identity providers for SSO (Azure AD, Okta, others) and required protocols (OIDC, SAML).</li>
+<li>Budget for remote builder infrastructure and whether managed service is desired.</li>
+<li>Extent of telemetry data customers are willing to share; need consent flows.</li>
+</ol>
+<hr />
+<p><strong>Milestone Outcome:</strong> Discovery groundwork completed with actionable requirements, reuse targets, and prioritized stakeholder needs ready for architectural planning (Milestone 2).</p>
+
+      </div>
+  </div>
+</div>
+
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>

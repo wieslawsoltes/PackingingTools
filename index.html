@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>PackagingTools | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="PackagingTools | PackagingTools">
+<meta name="twitter:description" content="Cross-Platform Packaging for .NET PackagingTools PackagingTools is a shared packaging stack for building, signing, validating, and publishing Windows, macOS, and Linux installers from one project model. It combines a desktop workspace, CLI automation, reusable SDK, platform engines, and generated API reference in one repository. Start Getting Started Browse API GitHub Repository 7 NuGet packages 3 platform engines 3 automation surfaces Start Here Installation and Onboarding Install .NET 10, validate native...">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="PackagingTools | PackagingTools">
+<meta property="og:title" content="PackagingTools | PackagingTools">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Cross-Platform Packaging for .NET PackagingTools PackagingTools is a shared packaging stack for building, signing, validating, and publishing Windows, macOS, and Linux installers from one project model. It combines a desktop workspace, CLI automation, reusable SDK, platform engines, and generated API reference in one repository. Start Getting Started Browse API GitHub Repository 7 NuGet packages 3 platform engines 3 automation surfaces Start Here Installation and Onboarding Install .NET 10, validate native...">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="PackagingTools | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md ">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-home">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container">
+<!-- lunet:summarize -->
+<div class="pt-hero">
+  <div class="pt-eyebrow"><i class="bi bi-box-seam" aria-hidden="true"></i> Cross-Platform Packaging for .NET</div>
+  <h1>PackagingTools</h1>
+  <p class="lead"><strong>PackagingTools</strong> is a shared packaging stack for building, signing, validating, and publishing Windows, macOS, and Linux installers from one project model. It combines a desktop workspace, CLI automation, reusable SDK, platform engines, and generated API reference in one repository.</p>
+  <div class="pt-hero-actions">
+    <a class="btn btn-primary btn-lg" href="articles/getting-started/overview"><i class="bi bi-rocket-takeoff" aria-hidden="true"></i> Start Getting Started</a>
+    <a class="btn btn-outline-secondary btn-lg" href="api"><i class="bi bi-braces" aria-hidden="true"></i> Browse API</a>
+    <a class="btn btn-outline-secondary btn-lg" href="https://github.com/wieslawsoltes/PackingingTools"><i class="bi bi-github" aria-hidden="true"></i> GitHub Repository</a>
+  </div>
+  <div class="pt-stat-grid">
+    <div class="pt-stat-card">
+      <span class="pt-stat-value">7</span>
+      <span class="pt-stat-label">NuGet packages</span>
+    </div>
+    <div class="pt-stat-card">
+      <span class="pt-stat-value">3</span>
+      <span class="pt-stat-label">platform engines</span>
+    </div>
+    <div class="pt-stat-card">
+      <span class="pt-stat-value">3</span>
+      <span class="pt-stat-label">automation surfaces</span>
+    </div>
+  </div>
+</div>
+<h2 id="start-here">Start Here</h2>
+<div class="pt-link-grid">
+  <a class="pt-link-card" href="articles/getting-started/installation">
+    <span class="pt-link-card-title"><i class="bi bi-download" aria-hidden="true"></i> Installation and Onboarding</span>
+    <p>Install .NET 10, validate native toolchains, and build the solution locally.</p>
+  </a>
+  <a class="pt-link-card" href="articles/getting-started/project-configuration">
+    <span class="pt-link-card-title"><i class="bi bi-sliders" aria-hidden="true"></i> Project Configuration</span>
+    <p>Learn the JSON project model, platform properties, and runtime overrides.</p>
+  </a>
+  <a class="pt-link-card" href="articles/getting-started/cli-quickstart">
+    <span class="pt-link-card-title"><i class="bi bi-terminal" aria-hidden="true"></i> CLI Quickstart</span>
+    <p>Run cross-platform packaging flows from scripts or CI with repeatable arguments.</p>
+  </a>
+  <a class="pt-link-card" href="articles/guides/windows-packaging">
+    <span class="pt-link-card-title"><i class="bi bi-windows" aria-hidden="true"></i> Windows Packaging</span>
+    <p>Build MSIX, MSI, App Installer, and WinGet outputs with signing and host integration.</p>
+  </a>
+</div>
+<h2 id="documentation-sections">Documentation Sections</h2>
+<div class="pt-link-grid pt-link-grid--wide">
+  <a class="pt-link-card" href="articles/getting-started">
+    <span class="pt-link-card-title"><i class="bi bi-signpost-split" aria-hidden="true"></i> Getting Started</span>
+    <p>Choose between the desktop app, CLI, and SDK and get to a first successful packaging run.</p>
+  </a>
+  <a class="pt-link-card" href="articles/concepts">
+    <span class="pt-link-card-title"><i class="bi bi-diagram-3" aria-hidden="true"></i> Concepts</span>
+    <p>Understand the architecture, identity model, policy engine, and security pipeline.</p>
+  </a>
+  <a class="pt-link-card" href="articles/guides">
+    <span class="pt-link-card-title"><i class="bi bi-journal-code" aria-hidden="true"></i> Guides</span>
+    <p>Platform-focused documentation for Windows, macOS, Linux, plugins, and SDK embedding.</p>
+  </a>
+  <a class="pt-link-card" href="articles/advanced">
+    <span class="pt-link-card-title"><i class="bi bi-gear-wide-connected" aria-hidden="true"></i> Advanced</span>
+    <p>Use the repository workflows, starter templates, and docs publishing pipeline in CI/CD.</p>
+  </a>
+  <a class="pt-link-card" href="articles/reference">
+    <span class="pt-link-card-title"><i class="bi bi-collection" aria-hidden="true"></i> Reference</span>
+    <p>Review package responsibilities, repository layout, roadmap artifacts, and ADRs.</p>
+  </a>
+  <a class="pt-link-card" href="api">
+    <span class="pt-link-card-title"><i class="bi bi-braces-asterisk" aria-hidden="true"></i> API Documentation</span>
+    <p>Generated .NET API pages for the core libraries, platform engines, SDK, plugins, and CLI.</p>
+  </a>
+</div>
+<h2 id="project-surfaces">Project Surfaces</h2>
+<ul>
+<li><span class="pt-pill">Desktop App</span> <code>src/PackagingTools.App</code> provides a guided Avalonia workspace for onboarding, environment validation, and project authoring.</li>
+<li><span class="pt-pill">CLI</span> <code>src/PackagingTools.Cli</code> runs packaging, validation, host integration, and release-oriented automation from scripts or GitHub Actions.</li>
+<li><span class="pt-pill">SDK</span> <code>src/PackagingTools.Sdk</code> embeds the same orchestration pipeline inside custom services and enterprise build systems.</li>
+</ul>
+<h2 id="repository">Repository</h2>
+<ul>
+<li>Source code and issues: <a href="https://github.com/wieslawsoltes/PackingingTools">github.com/wieslawsoltes/PackingingTools</a></li>
+<li>Published docs: <a href="https://wieslawsoltes.github.io/PackingingTools">wieslawsoltes.github.io/PackingingTools</a></li>
+</ul>
+
+</div>
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>

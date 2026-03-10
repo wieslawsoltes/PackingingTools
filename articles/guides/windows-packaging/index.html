@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>Windows Packaging Suite Blueprint | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="Windows Packaging Suite Blueprint | PackagingTools">
+<meta name="twitter:description" content="Windows Packaging Suite Blueprint 1. Packaging Pipelines 1.1 MSIX Pipeline Inputs: Compiled app binaries, assets, manifest template, signing profile. Steps:Generate AppxManifest via template expansion (App ID, display name, capabilities, dependencies). Stage payload directory structure (VFS, Assets, AppxManifest.xml, match architecture RID). Invoke makeappx pack (or MSIX SDK API) to produce .msix/.appx package. Apply optional App Installer configuration for self-updates (URI endpoints, version metadata). Sign package via...">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="Windows Packaging Suite Blueprint | PackagingTools">
+<meta property="og:title" content="Windows Packaging Suite Blueprint | PackagingTools">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Windows Packaging Suite Blueprint 1. Packaging Pipelines 1.1 MSIX Pipeline Inputs: Compiled app binaries, assets, manifest template, signing profile. Steps:Generate AppxManifest via template expansion (App ID, display name, capabilities, dependencies). Stage payload directory structure (VFS, Assets, AppxManifest.xml, match architecture RID). Invoke makeappx pack (or MSIX SDK API) to produce .msix/.appx package. Apply optional App Installer configuration for self-updates (URI endpoints, version metadata). Sign package via...">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="Windows Packaging Suite Blueprint | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md sticky-top">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-articles">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container-xxl">
+  <div class="row">
+      <!-- Left sidebar - responsive offcanvas (offcanvas on mobile, visible sidebar on md+) -->
+      <nav id="docs-sidebar-menu" class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 offcanvas-md offcanvas-start sticky-md-top menu-sidebar align-self-start order-1 order-md-0" tabindex="-1" aria-labelledby="docs-sidebar-menu-label" aria-expanded="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docs-sidebar-menu-label">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#docs-sidebar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ol id='menu-id-guides-0' class='menu menu-level0 show '>
+            <li id='menu-item-guides-1' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/' class='menu-link  '>Guides</a></span>  </li>
+            <li id='menu-item-guides-2' class='menu-item  active'>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/windows-packaging/' class='menu-link  '>Windows Packaging</a></span>  </li>
+            <li id='menu-item-guides-3' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/windows-host-validation/' class='menu-link  '>Windows Host Validation</a></span>  </li>
+            <li id='menu-item-guides-4' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/macos-packaging/' class='menu-link  '>macOS Packaging</a></span>  </li>
+            <li id='menu-item-guides-5' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/linux-repository-publishing/' class='menu-link  '>Linux Repository Publishing</a></span>  </li>
+            <li id='menu-item-guides-6' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/linux-container-builds/' class='menu-link  '>Linux Container Builds</a></span>  </li>
+            <li id='menu-item-guides-7' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/linux-security-artifacts/' class='menu-link  '>Linux Security Artifacts</a></span>  </li>
+            <li id='menu-item-guides-8' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/plugins/' class='menu-link  '>Plugin Configuration</a></span>  </li>
+            <li id='menu-item-guides-9' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/guides/sdk-embedding/' class='menu-link  '>SDK Embedding</a></span>  </li>
+          </ol>
+
+        </div>
+      </nav>
+      <!-- Right sidebar (TOC) - collapsible on mobile, visible sidebar on xxl+ -->
+      <aside id="docs-sidebar-toc" class="col-12 col-xxl-2 sticky-xxl-top menu-sidebar align-self-start order-0 order-xxl-2 collapse d-xxl-block" aria-expanded="true">
+        <h3 class="toc-title">On this page</h3>
+        <nav class="js-toc"></nav>
+      </aside>
+      <!-- Main content column -->
+      <div class="col-12 col-md-9 col-lg-9 col-xl-9 col-xxl-8 order-2 order-md-1 js-toc-content">
+        <ol class='breadcrumb'>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/' class='breadcrumb-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/' class='breadcrumb-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/guides/' class='breadcrumb-link  '>Guides</a>  </li>
+          <li class='breadcrumb-item  active'>
+            Windows Packaging  </li>
+        </ol>
+
+        <p id="lunet-results"></p>
+        <!-- Toggle buttons visible only on small screens -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#docs-sidebar-menu"
+            aria-controls="docs-sidebar-menu"
+            aria-label="Toggle docs menu">
+            Menu
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm d-xxl-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#docs-sidebar-toc"
+            aria-controls="docs-sidebar-toc"
+            aria-expanded="false"
+            aria-label="Toggle Table Of Contents">
+            On this page
+          </button>
+        </div>
+<!-- lunet:summarize -->
+<h1 id="windows-packaging-suite-blueprint">Windows Packaging Suite Blueprint</h1>
+<h2 id="1-packaging-pipelines">1. Packaging Pipelines</h2>
+<h3 id="11-msix-pipeline">1.1 MSIX Pipeline</h3>
+<ul>
+<li><strong>Inputs:</strong> Compiled app binaries, assets, manifest template, signing profile.</li>
+<li><strong>Steps:</strong>
+<ol>
+<li>Generate AppxManifest via template expansion (App ID, display name, capabilities, dependencies).</li>
+<li>Stage payload directory structure (<code>VFS</code>, <code>Assets</code>, <code>AppxManifest.xml</code>, match architecture RID).</li>
+<li>Invoke <code>makeappx pack</code> (or MSIX SDK API) to produce <code>.msix</code>/<code>.appx</code> package.</li>
+<li>Apply optional App Installer configuration for self-updates (URI endpoints, version metadata).</li>
+<li>Sign package via <code>signtool</code>/MSIX signing API (hash algorithm SHA-256, timestamp RFC 3161).</li>
+</ol>
+</li>
+</ul>
+<h3 id="12-msiexe-pipeline">1.2 MSI/EXE Pipeline</h3>
+<ul>
+<li><strong>Inputs:</strong> WiX template fragments, custom action scripts, branding resources.</li>
+<li><strong>Steps:</strong>
+<ol>
+<li>Generate WiX source (.wxs) using project metadata (ProductCode, UpgradeCode, features, components).</li>
+<li>Compile WiX with <code>candle.exe</code> and link via <code>light.exe</code>, injecting CAB compression settings.</li>
+<li>For bootstrapper EXEs, wrap MSI using Burn or <code>Advanced Installer</code> templates as plugin implementations.</li>
+<li>Embed custom actions for prerequisites (.NET Desktop runtime, VC++), scheduled tasks, and environment variables.</li>
+<li>Sign MSI/EXE artifacts and any embedded binaries.</li>
+</ol>
+</li>
+</ul>
+<h3 id="13-app-installer--winget-outputs">1.3 App Installer &amp; WinGet Outputs</h3>
+<ul>
+<li><strong>App Installer:</strong> Emit <code>.appinstaller</code> XML referencing MSIX packages with version and update URIs; optional automatic update cadence.</li>
+<li><strong>WinGet:</strong> Generate YAML manifests (default, installer, locale files) aligned with Microsoft schema; run validation (<code>winget validate</code>) before publishing.</li>
+</ul>
+<h4 id="provider-configuration-keys">Provider Configuration Keys</h4>
+<ul>
+<li><code>windows.msix.payloadDirectory</code> — source directory for MSIX staging.</li>
+<li><code>windows.msix.executable</code>, <code>windows.msix.entryPoint</code>, <code>windows.msix.logo</code> — manifest overrides for executable and assets.</li>
+<li><code>windows.msi.sourceDirectory</code> — directory harvested into MSI components.</li>
+<li><code>windows.msi.shortcutName</code>, <code>windows.msi.shortcutTarget</code>, <code>windows.msi.shortcutDescription</code>, <code>windows.msi.shortcutIcon</code> — start menu shortcut configuration for MSI packages.</li>
+<li><code>windows.msi.protocolName</code>, <code>windows.msi.protocolDisplayName</code>, <code>windows.msi.protocolCommand</code> — custom URI handler registration.</li>
+<li><code>windows.msi.shellExtensionExtension</code>, <code>windows.msi.shellExtensionProgId</code>, <code>windows.msi.shellExtensionDescription</code>, <code>windows.msi.shellExtensionCommand</code> — file association and shell extension wiring.</li>
+<li><code>windows.signing.certificatePath</code>, <code>windows.signing.password</code>, <code>windows.signing.timestampUrl</code> — code signing inputs.</li>
+<li><code>windows.signing.azureKeyVaultCertificate</code>, <code>windows.signing.azureKeyVaultUrl</code>, <code>windows.signing.azureKeyVaultTenantId</code>, <code>windows.signing.azureKeyVaultClientId</code> — remote signing configuration for Azure Key Vault connectors.</li>
+<li><code>windows.appinstaller.msixPath</code>, <code>windows.appinstaller.uri</code>, <code>windows.appinstaller.hoursBetweenUpdates</code> — App Installer feed values.</li>
+<li><code>windows.winget.id</code>, <code>windows.winget.locale</code>, <code>windows.winget.sha256</code> — WinGet manifest metadata hints.</li>
+</ul>
+<h2 id="2-certificate--signing-management">2. Certificate &amp; Signing Management</h2>
+<ul>
+<li>Maintain signing profiles in secure store (local cert store, Azure Key Vault, hashicorp vault).</li>
+<li>Support dual-signing (SHA-256/384) for legacy compatibility.</li>
+<li>Integrate RFC 3161 timestamp services with retry/backoff.</li>
+<li>Provide UI/CLI to:
+<ul>
+<li>Import/export PFX with role-based permissions.</li>
+<li>Configure remote signing via Azure Key Vault/HSM connectors (shipped in current milestone).</li>
+<li>Schedule certificate rotation alerts based on expiry.</li>
+</ul>
+</li>
+<li>Enforce policy rules: packaging blocked if cert expired/soon-to-expire, or timestamping fails.</li>
+</ul>
+<h2 id="3-automation-assets">3. Automation Assets</h2>
+<ul>
+<li><strong>App Installer:</strong> Template engine with tokens for CDN endpoints, min version, force update flags; ability to version URIs per release channel (Stable/Beta/Insider).</li>
+<li><strong>WinGet:</strong>
+<ul>
+<li>Manifest builder that maps PackagingTools project metadata to fields (PackageIdentifier, Publisher, InstallerType, InstallModes).</li>
+<li>Validation pipeline running <code>winget validate</code> and PowerShell Pester tests.</li>
+<li>Optional GitHub PR automation for community repository submissions (create branch, commit manifests, open PR).</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-host-integration-toggles">4. Host Integration Toggles</h2>
+<ul>
+<li>Provide configuration surface (GUI/CLI) for:
+<ul>
+<li>Start menu shortcuts, taskbar pins, desktop icons.</li>
+<li>Shell extension registration (context menus, file associations, protocol handlers).</li>
+<li>Services/scheduled tasks definitions with <code>sc.exe</code> scripts or WiX ServiceInstall elements.</li>
+<li>App Installer custom actions (repair, modify, uninstall commands).</li>
+</ul>
+</li>
+<li>Generate diff preview comparing current vs desired integrations for review before packaging.</li>
+<li>CLI support: <code>packagingtools host</code> previews and applies metadata changes, aligning with the Avalonia host integration editor and emitting property-level diffs.</li>
+<li>GUI support: the Windows platform panel exposes checkboxes/text inputs for shortcuts, protocols, and file associations with a live property change preview.</li>
+</ul>
+<h2 id="5-testing-strategy">5. Testing Strategy</h2>
+<ul>
+<li><strong>Unit Tests:</strong> Validate manifest generation, WiX templates, configuration diff logic.</li>
+<li><strong>Integration Tests (Windows runners):</strong>
+<ul>
+<li>Build sample app packages for MSIX &amp; MSI; install/uninstall headlessly.</li>
+<li>Run <code>signtool verify /pa</code> and <code>Get-AppPackage</code> checks.</li>
+<li>Validate WinGet manifest using official validator.</li>
+</ul>
+</li>
+<li><strong>Current coverage:</strong> cross-platform integration tests validate WiX generation for shortcuts, protocols, and associations; smoke tests optionally exercise real WiX tooling when present on Windows agents.</li>
+<li><strong>End-to-End:</strong> Use Windows Server 2022/Windows 11 agents to execute packaging flows triggered by CLI, capturing logs and verifying installed app behavior.</li>
+<li>Incorporate virtualization snapshots to ensure clean state per run.</li>
+</ul>
+<h2 id="6-diagnostics--telemetry">6. Diagnostics &amp; Telemetry</h2>
+<ul>
+<li>Capture packaging step metrics (duration, tool exit codes, signature details) via OpenTelemetry events.</li>
+<li>Bundle log files (<code>makeappx</code>, <code>signtool</code>, WiX) into artifact zip for support.</li>
+<li>Provide error classification: manifest validation, signing, upload, integration conflicts.</li>
+<li>Expose dashboards in GUI showing recent runs, failure rates, certificate health.</li>
+</ul>
+<h2 id="7-dependencies--toolchain-management">7. Dependencies &amp; Toolchain Management</h2>
+<ul>
+<li>Manage versions for:
+<ul>
+<li>Windows SDK (MSIX tooling).</li>
+<li>WiX Toolset 3.14+ (MSI authoring via <code>heat.exe</code>, <code>candle.exe</code>, and <code>light.exe</code>).</li>
+<li>WinGet CLI for manifest validation.</li>
+<li>Signtool/Timestamp servers.</li>
+</ul>
+</li>
+<li>Build scripts (<code>build/win/setup.ps1</code>) to install/update dependencies, support offline caching, and run checks (<code>Get-Package</code>, <code>winget</code> availability).</li>
+</ul>
+<h2 id="8-roadmap-actions">8. Roadmap Actions</h2>
+<ol>
+<li>Implement <code>PackagingTools.Core.Windows</code> module encapsulating pipelines and certificate services.</li>
+<li>Build GUI panels for signing profiles, integration toggles, and artifact previews.</li>
+<li>Ship CLI commands <code>pack windows msix</code>, <code>pack windows msi</code>, <code>generate winget</code> with consistent options.</li>
+<li>Add Azure Key Vault connector plugin for remote signing (optional dependency).</li>
+<li>Configure Windows GitHub Actions workflow running integration suite on each PR.</li>
+</ol>
+
+      </div>
+  </div>
+</div>
+
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>

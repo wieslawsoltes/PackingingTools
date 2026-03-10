@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>Identity Integration Architecture | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="Identity Integration Architecture | PackagingTools">
+<meta name="twitter:description" content="Identity Integration Architecture This document captures the high-level architecture for packaging identity integration across Azure AD, Okta, and other OIDC/SAML providers. Objectives Support SSO authentication for GUI/CLI clients using the organisation's IdP. Issue scoped access tokens for automation (policy approvals, remote agent orchestration, repository publishing). Enforce MFA and conditional access policies when required by governance. Provide RBAC aligned with PackagingTools personas (Developer, Release Engineer, Security Officer, Administrator)....">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="Identity Integration Architecture | PackagingTools">
+<meta property="og:title" content="Identity Integration Architecture | PackagingTools">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Identity Integration Architecture This document captures the high-level architecture for packaging identity integration across Azure AD, Okta, and other OIDC/SAML providers. Objectives Support SSO authentication for GUI/CLI clients using the organisation's IdP. Issue scoped access tokens for automation (policy approvals, remote agent orchestration, repository publishing). Enforce MFA and conditional access policies when required by governance. Provide RBAC aligned with PackagingTools personas (Developer, Release Engineer, Security Officer, Administrator)....">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="Identity Integration Architecture | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md sticky-top">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-articles">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container-xxl">
+  <div class="row">
+      <!-- Left sidebar - responsive offcanvas (offcanvas on mobile, visible sidebar on md+) -->
+      <nav id="docs-sidebar-menu" class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 offcanvas-md offcanvas-start sticky-md-top menu-sidebar align-self-start order-1 order-md-0" tabindex="-1" aria-labelledby="docs-sidebar-menu-label" aria-expanded="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docs-sidebar-menu-label">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#docs-sidebar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ol id='menu-id-concepts-0' class='menu menu-level0 show '>
+            <li id='menu-item-concepts-1' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/' class='menu-link  '>Concepts</a></span>  </li>
+            <li id='menu-item-concepts-2' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/solution-architecture/' class='menu-link  '>Solution Architecture</a></span>  </li>
+            <li id='menu-item-concepts-3' class='menu-item  active'>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/identity-architecture/' class='menu-link  '>Identity Architecture</a></span>  </li>
+            <li id='menu-item-concepts-4' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/policy-engine/' class='menu-link  '>Policy Engine</a></span>  </li>
+            <li id='menu-item-concepts-5' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/security-and-sbom/' class='menu-link  '>Security and SBOM</a></span>  </li>
+          </ol>
+
+        </div>
+      </nav>
+      <!-- Right sidebar (TOC) - collapsible on mobile, visible sidebar on xxl+ -->
+      <aside id="docs-sidebar-toc" class="col-12 col-xxl-2 sticky-xxl-top menu-sidebar align-self-start order-0 order-xxl-2 collapse d-xxl-block" aria-expanded="true">
+        <h3 class="toc-title">On this page</h3>
+        <nav class="js-toc"></nav>
+      </aside>
+      <!-- Main content column -->
+      <div class="col-12 col-md-9 col-lg-9 col-xl-9 col-xxl-8 order-2 order-md-1 js-toc-content">
+        <ol class='breadcrumb'>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/' class='breadcrumb-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/' class='breadcrumb-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/concepts/' class='breadcrumb-link  '>Concepts</a>  </li>
+          <li class='breadcrumb-item  active'>
+            Identity Architecture  </li>
+        </ol>
+
+        <p id="lunet-results"></p>
+        <!-- Toggle buttons visible only on small screens -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#docs-sidebar-menu"
+            aria-controls="docs-sidebar-menu"
+            aria-label="Toggle docs menu">
+            Menu
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm d-xxl-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#docs-sidebar-toc"
+            aria-controls="docs-sidebar-toc"
+            aria-expanded="false"
+            aria-label="Toggle Table Of Contents">
+            On this page
+          </button>
+        </div>
+<!-- lunet:summarize -->
+<h1 id="identity-integration-architecture">Identity Integration Architecture</h1>
+<p>This document captures the high-level architecture for packaging identity integration across Azure AD, Okta, and other OIDC/SAML providers.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Support SSO authentication for GUI/CLI clients using the organisation's IdP.</li>
+<li>Issue scoped access tokens for automation (policy approvals, remote agent orchestration, repository publishing).</li>
+<li>Enforce MFA and conditional access policies when required by governance.</li>
+<li>Provide RBAC aligned with PackagingTools personas (Developer, Release Engineer, Security Officer, Administrator).</li>
+</ul>
+<h2 id="core-components">Core Components</h2>
+<ol>
+<li><strong>Identity Service Abstraction</strong> – <code>PackagingTools.Core.Security.Identity.IIdentityService</code> mediates authentication flows. Implementations can delegate to Azure AD (MSAL) or Okta (OIDC/OAuth). The default implementation returns a service principal for offline scenarios.</li>
+<li><strong>Identity Models</strong> – <code>IdentityRequest</code>, <code>IdentityResult</code>, <code>IdentityToken</code>, and <code>IdentityPrincipal</code> carry provider metadata, tokens, claims, and role assignments.</li>
+<li><strong>Role Model</strong> – Roles map to permissions:
+<ul>
+<li><code>Admin</code> – Manage policies, identity configuration, environment settings.</li>
+<li><code>SecurityOfficer</code> – Approve releases, manage signing material, view audit evidence.</li>
+<li><code>ReleaseEngineer</code> – Execute packaging runs, upload artifacts, manage pipelines.</li>
+<li><code>Developer</code> – Run local packaging, view run history.</li>
+</ul>
+</li>
+<li><strong>Token Handling</strong> – Access tokens stored in secure store (e.g., FileSecureStore/local secrets) with short TTL and refresh tokens when workflows require long-lived sessions.</li>
+<li><strong>MFA Enforcement</strong> – <code>IdentityRequest.RequireMfa</code> indicates operations requiring MFA (e.g., policy approval). Providers surface MFA claims which the policy engine validates before continuing.</li>
+</ol>
+<h2 id="provider-integration">Provider Integration</h2>
+<h3 id="azure-active-directory">Azure Active Directory</h3>
+<ul>
+<li>Use OAuth 2.0/OIDC with MSAL.</li>
+<li>Acquire tokens for API scopes such as <code>api://packagingtools/run</code>, <code>api://packagingtools/approve</code>.</li>
+<li>Support device code flow in CLI and interactive flow in GUI.</li>
+<li>Validate Conditional Access claims; ensure <code>mfa</code> or <code>deviceid</code> present when required.</li>
+</ul>
+<h3 id="okta">Okta</h3>
+<ul>
+<li>Use OIDC PKCE flow.</li>
+<li>Map Okta groups to PackagingTools roles.</li>
+<li>Retrieve <code>id_token</code> for profile info, <code>access_token</code> for API calls.</li>
+<li>Evaluate Okta ThreatInsight events to block risky logins.</li>
+</ul>
+<h2 id="integration-points">Integration Points</h2>
+<ul>
+<li><strong>CLI / SDK</strong> – Service collection registers <code>IIdentityService</code>. Consumers pass <code>IdentityRequest</code> specifying provider, scopes, and MFA requirement. Default fallback ensures backwards compatibility.</li>
+<li><strong>CLI</strong> – <code>packagingtools identity login</code> acquires tokens for Azure AD or Okta and persists them into the shared secure store for subsequent runs.</li>
+<li><strong>Policy Engine</strong> – Validates identity claims for approvals and RBAC.</li>
+<li><strong>Remote Agents</strong> – Tokens forwarded to remote execution environment for signing/repository publishing.</li>
+<li><strong>Audit Trail</strong> – Identity principal metadata attached to packaging run logs.</li>
+</ul>
+<h2 id="configuration">Configuration</h2>
+<ul>
+<li><code>identity.provider</code> – default provider key (<code>azuread</code>, <code>okta</code>, <code>local</code>).</li>
+<li><code>identity.azuread.tenantId</code>, <code>identity.azuread.clientId</code>, <code>identity.azuread.clientSecret</code>.</li>
+<li><code>identity.okta.domain</code>, <code>identity.okta.clientId</code>, <code>identity.okta.clientSecret</code>.</li>
+<li>CLI/GUI expose login command to bootstrap tokens and persist refresh tokens in secure store.</li>
+</ul>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li>Implement Azure AD and Okta identity services using MSAL/Okta SDKs.</li>
+<li>Persist tokens via secure store with rotation and revocation workflows.</li>
+<li>Integrate identity claims with policy evaluation (e.g., ensure role membership before approvals).</li>
+<li>Provide admin UI for role assignments, MFA policy toggles, and audit reporting.</li>
+</ol>
+
+      </div>
+  </div>
+</div>
+
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>

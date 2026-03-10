@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html data-lunet-theme-mode="system" data-lunet-theme-storage-key="lunet-theme" data-lunet-css-prefix="lunet" lang="en" itemscope itemtype="http://schema.org/WebPage">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="lunet 1.0.10.0">
+    <script>(function(){const root=document.documentElement;const key=root.getAttribute("data-lunet-theme-storage-key")||"lunet-theme";const fallback=root.getAttribute("data-lunet-theme-mode")||"system";let stored=null;try{stored=localStorage.getItem(key);}catch(_){stored=null;}const mode=(stored==="light"||stored==="dark"||stored==="system")?stored:fallback;const prefersDark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;const resolved=mode==="system"?(prefersDark?"dark":"light"):mode;root.setAttribute("data-lunet-theme-mode",mode);root.setAttribute("data-bs-theme",resolved);}());</script>
+    <link rel='icon' href='/PackingingTools/favicon.ico' sizes='32x32'>
+    <title>Vulnerability Scanning & SBOM Architecture | PackagingTools</title>
+    <link rel="stylesheet" href="/PackingingTools/css/lite.css">
+    <script src="/PackingingTools/js/lite-defer.js" defer></script>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@wieslawsoltes">
+<meta name="twitter:title" content="Vulnerability Scanning & SBOM Architecture | PackagingTools">
+<meta name="twitter:description" content="Vulnerability Scanning &amp; SBOM Architecture This document outlines how PackagingTools will enrich packaging runs with software bill of materials (SBOM) generation and vulnerability scanning, satisfying enterprise governance and supply-chain security requirements. Implementation details for the Linux pipeline, including configuration flags and output locations, are summarised in Linux Security Artifacts. Objectives Produce SBOMs for every packaging artifact (Windows, macOS, Linux) using industry standards (CycloneDX, SPDX). Execute vulnerability scanning (CVEs, malware signatures,...">
+<meta name="twitter:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta name="twitter:image:alt" content="Vulnerability Scanning & SBOM Architecture | PackagingTools">
+<meta property="og:title" content="Vulnerability Scanning & SBOM Architecture | PackagingTools">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://wieslawsoltes.github.io/PackingingTools">
+<meta property="og:description" content="Vulnerability Scanning &amp; SBOM Architecture This document outlines how PackagingTools will enrich packaging runs with software bill of materials (SBOM) generation and vulnerability scanning, satisfying enterprise governance and supply-chain security requirements. Implementation details for the Linux pipeline, including configuration flags and output locations, are summarised in Linux Security Artifacts. Objectives Produce SBOMs for every packaging artifact (Windows, macOS, Linux) using industry standards (CycloneDX, SPDX). Execute vulnerability scanning (CVEs, malware signatures,...">
+<meta property="og:image" content="https://wieslawsoltes.github.io/PackingingTools/images/logo.svg">
+<meta property="og:image:alt" content="Vulnerability Scanning & SBOM Architecture | PackagingTools">
+  </head>
+  <body>
+
+    <div id="lunet" class="container">
+      <nav class="navbar navbar-expand-md sticky-top">
+        <a class="navbar-brand" href="/PackingingTools/">
+          <img class="lunet-logo" src="/PackingingTools/images/logo.svg" alt="PackagingTools" width="96" height="96">
+          <span class="visually-hidden">Home</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navbarSupportedContent" class="collapse navbar-collapse justify-content-between">
+<ol id='nav-id-home-0' class='navbar-nav nav-level0 show '>
+  <li id='nav-item-home-1' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/' class='nav-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a></span>  </li>
+  <li id='nav-item-home-2' class='nav-item  active'>
+    <span class='nav-item-row'><a href='/PackingingTools/articles/' class='nav-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a></span>  </li>
+  <li id='nav-item-home-3' class='nav-item '>
+    <span class='nav-item-row'><a href='/PackingingTools/api/' class='nav-link  '><i class='bi bi-braces' aria-hidden='true'></i> API</a></span>  </li>
+</ol>
+          <ol class="navbar-nav flex-grow-1" style="padding-right: 0.5rem;">
+            <li class="nav-item w-100">
+                <div class="lunet-search dropdown w-100">
+                  <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input id="search-input" type="search" class="form-control" placeholder="Search... (Alt+s)" aria-label="Search" aria-controls="search-results" data-bs-toggle="dropdown" data-bs-auto-close="outside" data-search-empty-message="Enter words to search..." data-search-no-results-message="No results found.">
+                    <ul id="search-results" class="dropdown-menu w-100 p-0" style="max-height: 50vh;" role="listbox" aria-labelledby="search-input"></ul>
+                  </div>
+                </div>
+            </li>
+          </ol>
+          <div class="d-flex align-items-center gap-2 flex-shrink-0 navbar-right">
+            <div class="dropdown">
+              <button
+                id="theme-mode-toggle"
+                class="btn btn-outline-secondary btn-sm lunet-theme-toggle dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="Theme">
+                <i class="bi bi-circle-half" data-lunet-theme-toggle-icon aria-hidden="true"></i>
+                <span
+                  data-lunet-theme-toggle-label
+                  data-theme-system-label="System"
+                  data-theme-light-label="Light"
+                  data-theme-dark-label="Dark">Theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-mode-toggle">
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="system"><i class="bi bi-circle-half me-2"></i>System</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="light"><i class="bi bi-sun-fill me-2"></i>Light</button></li>
+                <li><button class="dropdown-item" type="button" data-lunet-theme-choice="dark"><i class="bi bi-moon-stars-fill me-2"></i>Dark</button></li>
+              </ul>
+            </div>
+<ol id='nav-id-home2-0' class='navbar-nav nav-level0 show flex-shrink-0'>
+  <li id='nav-item-home2-1' class='nav-item '>
+    <span class='nav-item-row'><a href='https://github.com/wieslawsoltes/PackingingTools' class='nav-link  btn btn-info'><i class="bi bi-github"></i> GitHub</a></span>  </li>
+</ol>
+          </div>
+        </div>
+      </nav>
+      <div class="lunet lunet-articles">
+        <section data-prismjs-copy="" data-prismjs-copy-success="" data-prismjs-copy-timeout="1200" data-copy-tooltip="Copy to Clipboard." data-copy-tooltip-success="Copied!" data-copy-tooltip-error="Failed to copy!">
+
+<div class="container-xxl">
+  <div class="row">
+      <!-- Left sidebar - responsive offcanvas (offcanvas on mobile, visible sidebar on md+) -->
+      <nav id="docs-sidebar-menu" class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 offcanvas-md offcanvas-start sticky-md-top menu-sidebar align-self-start order-1 order-md-0" tabindex="-1" aria-labelledby="docs-sidebar-menu-label" aria-expanded="true">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="docs-sidebar-menu-label">Menu</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#docs-sidebar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ol id='menu-id-concepts-0' class='menu menu-level0 show '>
+            <li id='menu-item-concepts-1' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/' class='menu-link  '>Concepts</a></span>  </li>
+            <li id='menu-item-concepts-2' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/solution-architecture/' class='menu-link  '>Solution Architecture</a></span>  </li>
+            <li id='menu-item-concepts-3' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/identity-architecture/' class='menu-link  '>Identity Architecture</a></span>  </li>
+            <li id='menu-item-concepts-4' class='menu-item '>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/policy-engine/' class='menu-link  '>Policy Engine</a></span>  </li>
+            <li id='menu-item-concepts-5' class='menu-item  active'>
+              <span class='menu-item-row'><a href='/PackingingTools/articles/concepts/security-and-sbom/' class='menu-link  '>Security and SBOM</a></span>  </li>
+          </ol>
+
+        </div>
+      </nav>
+      <!-- Right sidebar (TOC) - collapsible on mobile, visible sidebar on xxl+ -->
+      <aside id="docs-sidebar-toc" class="col-12 col-xxl-2 sticky-xxl-top menu-sidebar align-self-start order-0 order-xxl-2 collapse d-xxl-block" aria-expanded="true">
+        <h3 class="toc-title">On this page</h3>
+        <nav class="js-toc"></nav>
+      </aside>
+      <!-- Main content column -->
+      <div class="col-12 col-md-9 col-lg-9 col-xl-9 col-xxl-8 order-2 order-md-1 js-toc-content">
+        <ol class='breadcrumb'>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/' class='breadcrumb-link  '><i class='bi bi-house-door' aria-hidden='true'></i> Home</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/' class='breadcrumb-link  '><i class='bi bi-book' aria-hidden='true'></i> Docs</a>  </li>
+          <li class='breadcrumb-item '>
+            <a href='/PackingingTools/articles/concepts/' class='breadcrumb-link  '>Concepts</a>  </li>
+          <li class='breadcrumb-item  active'>
+            Security and SBOM  </li>
+        </ol>
+
+        <p id="lunet-results"></p>
+        <!-- Toggle buttons visible only on small screens -->
+        <div class="d-md-none mb-3">
+          <button
+            class="btn btn-outline-secondary btn-sm me-2"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#docs-sidebar-menu"
+            aria-controls="docs-sidebar-menu"
+            aria-label="Toggle docs menu">
+            Menu
+          </button>
+          <button
+            class="btn btn-outline-secondary btn-sm d-xxl-none"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#docs-sidebar-toc"
+            aria-controls="docs-sidebar-toc"
+            aria-expanded="false"
+            aria-label="Toggle Table Of Contents">
+            On this page
+          </button>
+        </div>
+<!-- lunet:summarize -->
+<h1 id="vulnerability-scanning--sbom-architecture">Vulnerability Scanning &amp; SBOM Architecture</h1>
+<p>This document outlines how PackagingTools will enrich packaging runs with software bill of materials (SBOM) generation and vulnerability scanning, satisfying enterprise governance and supply-chain security requirements.</p>
+<p>Implementation details for the Linux pipeline, including configuration flags and output locations, are summarised in <a href="/PackingingTools/articles/guides/linux-security-artifacts">Linux Security Artifacts</a>.</p>
+<h2 id="objectives">Objectives</h2>
+<ul>
+<li>Produce SBOMs for every packaging artifact (Windows, macOS, Linux) using industry standards (CycloneDX, SPDX).</li>
+<li>Execute vulnerability scanning (CVEs, malware signatures, policy scans) pre-publication.</li>
+<li>Capture results alongside packaging artifacts for auditing and policy enforcement.</li>
+<li>Support provider extensibility to integrate with customer-specific scanners (e.g., Trivy, Grype, Defender for Cloud, Anchore).</li>
+</ul>
+<h2 id="architecture-overview">Architecture Overview</h2>
+<pre><code>Packaging Pipeline
+ ├─ Build artifacts (MSIX/MSI/PKG/DMG/DEB/RPM/AppImage/etc.)
+ ├─ SBOM Generation
+ │    ├─ Format-specific generators (CycloneDX JSON)
+ │    └─ Aggregation service storing SBOMs in audit store
+ └─ Vulnerability Scanning
+      ├─ Scan orchestrator tickets artifacts
+      ├─ Normalises results (CVSS, severity, identifiers)
+      └─ Policy evaluator ensures blocking thresholds obeyed
+</code></pre>
+<h3 id="core-components">Core Components</h3>
+<ol>
+<li><p><strong>ISbomGenerator</strong></p>
+<ul>
+<li>Interface responsible for producing SBOM documents from <code>PackageFormatContext</code>.</li>
+<li>Implementation per platform using native tooling (e.g., <code>dotnet cyclonedx</code> for .NET apps, <code>syft</code> for Linux packages).</li>
+<li>Linux pipeline stores SBOMs under the packaging output directory <code>_Sbom/&lt;artifact-name&gt;.cdx.json</code>.</li>
+</ul>
+</li>
+<li><p><strong>IVulnerabilityScanner</strong></p>
+<ul>
+<li>Runs configured scanner with artifact path and optionally SBOM.</li>
+<li>Normalises results into <code>VulnerabilityReport</code> (list of findings with severity, CVE, advisory URL, fix versions).</li>
+<li>Supports gating: pipeline fails when severity exceeds policy thresholds.</li>
+</ul>
+</li>
+<li><p><strong>Security Policy</strong></p>
+<ul>
+<li>Extends <code>PolicyEngineEvaluator</code> to honour security configuration keys:
+<ul>
+<li><code>security.vuln.maxSeverity</code> (e.g., block on Critical/High).</li>
+<li><code>security.vuln.requiredProviders</code> (ensures mandated scanners ran).</li>
+<li><code>security.sbom.required</code> toggles mandatory SBOM presence.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Audit Integration</strong></p>
+<ul>
+<li>SBOMs materialise on disk (e.g., <code>_Sbom/*.cdx.json</code>) and scanners surface findings through <code>PackagingResult.Issues</code>.</li>
+<li>Telemetry events carry <code>security.*</code> dimensions for downstream aggregation.</li>
+</ul>
+</li>
+</ol>
+<h2 id="data-flow">Data Flow</h2>
+<ol>
+<li>Format provider finishes packaging.</li>
+<li>Pipeline invokes SBOM generator (when <code>security.sbom.enabled</code>).</li>
+<li>SBOM written to <code>_Sbom/</code>; informational issue logged.</li>
+<li>Vulnerability scanners run (when <code>security.vuln.enabled</code>).</li>
+<li>Findings converted into <code>PackagingIssue</code> entries and validated against policy.</li>
+<li>Issues exposed via <code>PackagingResult</code> for CLI/GUI display and telemetry.</li>
+</ol>
+<h2 id="extensibility">Extensibility</h2>
+<ul>
+<li>Multiple SBOM generators/scanners can run; configuration selects primary output.</li>
+<li>Pluggable connectors allow uploading results to external systems (e.g., Defender, Harbor, GitHub Advanced Security).</li>
+</ul>
+<h2 id="configuration-keys">Configuration Keys</h2>
+<table class="table">
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>security.sbom.enabled</code></td>
+<td>Enable SBOM generation (default true).</td>
+</tr>
+<tr>
+<td><code>security.sbom.format</code></td>
+<td>Desired format (<code>cyclonedx-json</code>, <code>spdx-json</code>).</td>
+</tr>
+<tr>
+<td><code>security.vuln.enabled</code></td>
+<td>Enable vulnerability scanning.</td>
+</tr>
+<tr>
+<td><code>security.vuln.providers</code></td>
+<td>Comma-separated provider IDs (e.g., <code>trivy,msdefender</code>).</td>
+</tr>
+<tr>
+<td><code>security.vuln.maxSeverity</code></td>
+<td>Maximum allowed severity (<code>Low</code>, <code>Medium</code>, <code>High</code>, <code>Critical</code>).</td>
+</tr>
+<tr>
+<td><code>security.vuln.failOnError</code></td>
+<td>Fail packaging run if scanners return errors.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-steps">Next Steps</h2>
+<ol>
+<li>Expand SBOM generators beyond Linux/CycloneDX to Windows and macOS formats.</li>
+<li>Add additional vulnerability providers (e.g., Grype, Microsoft Defender) and multi-scanner orchestration.</li>
+<li>Feed security issues into policy engine gating rules and compliance exports.</li>
+<li>Surface SBOM/vulnerability status in CLI output and GUI dashboards.</li>
+</ol>
+
+      </div>
+  </div>
+</div>
+
+        </section>
+        <footer>
+          <hr>
+          <p>Copyright &copy; 2026, Wieslaw Soltes aka <a href="https://github.com/wieslawsoltes">wieslawsoltes</a> - Content licensed under the Creative Commons <a href="http://creativecommons.org/licenses/by/2.5/">CC BY 2.5</a> | Site generated by <a href="https://github.com/lunet-io/lunet">lunet</a> hosted on <a href="https://pages.github.com/">GitHub Pages</a></p>
+        </footer>
+      </div>
+    </div>
+
+  </body>
+</html>
