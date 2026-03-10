@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles</loc>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/security-and-sbom</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
@@ -17,11 +9,23 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/solution-architecture</loc>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
     <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/getting-started/cli-quickstart</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/getting-started/desktop-project-wizard</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/solution-architecture</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
@@ -37,7 +41,7 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/getting-started/desktop-project-wizard</loc>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
@@ -53,15 +57,11 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/policy-engine</loc>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/milestone-discovery</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
     <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/package-map</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/milestone-discovery</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
@@ -73,14 +73,6 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/security-and-sbom</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/packaging-roadmap</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
     <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/repository-layout</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
@@ -89,51 +81,7 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/getting-started</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/macos-packaging</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
     <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/linux-repository-publishing</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/plugins</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/sdk-embedding</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/windows-host-validation</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0001-windows-toolchain-selection</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/windows-packaging</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0003-macos-toolchain-selection</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0002-windows-process-execution-abstraction</loc>
-    <lastmod>2026-03-10</lastmod>
-  </url>
-  <url>
-    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0004-linux-toolchain-selection</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
@@ -141,7 +89,59 @@
     <lastmod>2026-03-10</lastmod>
   </url>
   <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/macos-packaging</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/plugins</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/concepts/policy-engine</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/windows-host-validation</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/getting-started</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0001-windows-toolchain-selection</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0002-windows-process-execution-abstraction</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0003-macos-toolchain-selection</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr/0004-linux-toolchain-selection</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
     <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/adr</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/reference/packaging-roadmap</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/sdk-embedding</loc>
+    <lastmod>2026-03-10</lastmod>
+  </url>
+  <url>
+    <loc>https://wieslawsoltes.github.io/PackingingTools/PackingingTools/articles/guides/windows-packaging</loc>
     <lastmod>2026-03-10</lastmod>
   </url>
 </urlset>
