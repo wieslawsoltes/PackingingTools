@@ -35,7 +35,7 @@
                     <TextBox x:Name="ProjectFileBox"
                              Grid.Row="3"
                              Grid.Column="1"
-                             Watermark="Optional path to save project definition"
+                             PlaceholderText="Optional path to save project definition"
                              Text="{Binding ProjectFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                     <TextBlock Grid.Row="4"
