@@ -30,7 +30,7 @@
                   ColumnSpacing="8"
                   IsVisible="{Binding IsWorkspaceVisible}">
                 <TextBox Grid.Column="0"
-                         Watermark="Project file path"
+                         PlaceholderText="Project file path"
                          Text="{Binding ProjectPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Grid.Column="1" Content="Load" Command="{Binding LoadProjectCommand}" />
                 <Button Grid.Column="2" Content="Save" Command="{Binding SaveProjectCommand}" />
